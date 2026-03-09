@@ -11,10 +11,6 @@ import { IncomingHttpHeaders } from "http";
 import { randomUUID } from "node:crypto";
 import type { Request, Response } from 'express';
 import * as fs from "fs";
-import * as path from "path";
-import bcrypt from "bcrypt";
-
-const NWS_API_BASE = "http://localhost:8080";
 
 dotenv.config();
 
@@ -34,140 +30,37 @@ const server = new McpServer({
 // API Overview Resource
 server.registerResource(
     "API Overview",
-    "loopfans://api/overview",
+    "loopfans://api/backend-server",
     {
-        description: "Loopfans Rewards API overview and getting started guide",
-        mimeType: "text/markdown"
-    },
-    async () => ({
-        contents: [{
-            uri: "loopfans://api/overview",
-            mimeType: "text/markdown",
-            text: `# Loopfans Rewards API Overview
-## NOTE
-Use yarn to add all dependencies. Do not use npm.
-
-## Base URL
-\`http://localhost:8080\`
-
-## Authentication
-Sign up and sign in will be done through typescript sdk: @lil2good/cloud-social-wallet (its need to be installed with yarn add @lil2good/cloud-social-wallet) which will return a JWT token and address which will be further be used in all endpoints as a JWT authentication via the \`user_cookie\` header also store the address and cookie from response of cloud wallet sdk. So add/ it in the auth header of all the requests.
-Add the sdk in the package.json of the project. And use it to sign up and sign in with the following example.
-
-## Example
-
-import {WalletProvider} from "cloud-social-wallet";
-
-function App() {
-    return (
-        <WalletProvider config={{rpc: 'https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_10/PJNkurZzzzji8gA6ErLHN', backend_url: 'https://cloud.loop.fans', prefix: 'starknet'}}>
-            <WalletApp/>
-        </WalletProvider>
-    )
-}
-
-
-import {useWallet} from "cloud-social-wallet";
-
-function WalletApp() {
-    const {address, cookie, logout, login} = useWallet()
-    return (
-        <>
-            {
-                address ? <>
-                    <p>{address}</p>
-                    <button onClick={logout}>Disconnect</p>
-                </> : <>
-                    <button onClick={() => login('google')}>Google Login</button>
-                     <button onClick={() => login('auth')}>ogin With Email</button>
-                </>
-            }
-        </>
-    )
-}
-
-
-## Available Endpoints
-
-### User Info
-- to get user info from directus or create if not exists
-
-### Quests Management
-- Create, update, list, and retrieve quests
-- Quest submission and approval workflowsL
-
-### User Quests
-- Submit quest participation
-- Update submissions
-- Change quest status (approve/reject)
-- List user quests
-
-### Rewards Management
-- Create and update rewards
-- List available rewards
-- Get reward details
-
-### User Rewards
-- Redeem rewards with points
-- List user's redeemed rewards
-- Track reward redemption
-
-### Dashboard
-- Get comprehensive statistics
-- Track quest and reward metrics
-
-## Common Parameters
-
-- **limit**: Number of items per page (default: 10)
-- **page**: Page number (default: 1)
-- **cookie**: JWT authentication token (required for all endpoints)
-
-## Response Format
-All endpoints return JSON responses.
-
-## Error Handling
-Errors return JSON with an \`error\` field containing the error message.
-`
-        }]
-    })
-);
-// ============================================================================
-// COMPREHENSIVE BACKEND API DOCUMENTATION RESOURCES
-// ============================================================================
-
-// Backend API Reference Resource
-server.registerResource(
-    "Backend API Reference",
-    "loopfans://api/backend-reference",
-    {
-        description: "Complete backend API reference covering all 200+ endpoints across all categories",
+        description: "Loopfans Backend Server API overview and getting started guide",
         mimeType: "text/markdown"
     },
     async () => {
         try {
             const content = await fs.promises.readFile(
-                "./docs/backend-api-reference.md",
+                "./docs/architecture_backend_server.md",
                 "utf-8"
             );
             return {
                 contents: [{
-                    uri: "loopfans://api/backend-reference",
+                    uri: "loopfans://api/backend-server",
                     mimeType: "text/markdown",
                     text: content
                 }]
             };
         } catch (error) {
-            console.error("Error reading backend-api-reference.md:", error);
+            console.error("Error reading architecture_backend_server.md:", error);
             return {
                 contents: [{
-                    uri: "loopfans://api/backend-reference",
+                    uri: "loopfans://api/backend-server",
                     mimeType: "text/markdown",
-                    text: "# Error\n\nFailed to load backend API reference documentation."
+                    text: "# Error\n\nFailed to load backend server API documentation."
                 }]
             };
         }
     }
 );
+
 
 // User Info API Resource
 server.registerResource(
