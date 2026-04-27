@@ -180,6 +180,8 @@ server.tool(
 // ============================================================================
 const PORT = 3001;
 const app = createMcpExpressApp();
+app.use(cors());
+
 const transports: { [sessionId: string]: StreamableHTTPServerTransport } = {};
 const authMiddleware = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     let token = req.headers.authorization?.split(' ')[1];

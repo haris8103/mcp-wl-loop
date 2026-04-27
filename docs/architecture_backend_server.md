@@ -9,14 +9,13 @@ Studio module is for artists to manage their content. It is a web application wh
 
 ## Loopfans Rewards API Overview
 
-### NOTE
-Use yarn to add all dependencies. Do not use npm.
+
 
 ### Base URL
 http://localhost:8080
 
 ### Authentication
-Sign up and sign in will be done through typescript sdk: @lil2good/cloud-social-wallet (its need to be installed with yarn add @lil2good/cloud-social-wallet) which will return a JWT token and address which will be further be used in all endpoints as a JWT authentication via the `user_cookie` header also store the address and cookie from response of cloud wallet sdk. So add/ it in the auth header of all the requests.
+Sign up and sign in will be done through typescript sdk: @lil2good/cloud-social-wallet which will return a JWT token and address which will be further be used in all endpoints as a JWT authentication via the `user_cookie` header also store the address and cookie from response of cloud wallet sdk. So add/ it in the auth header of all the requests.
 Add the sdk in the package.json of the project. And use it to sign up and sign in with the following example.
 
 ### Example
@@ -57,9 +56,13 @@ function WalletApp() {
 
 1. signup/signin with cloud wallet sdk
 2. creating domain for artist arena where fan will be able to view music, galleries, videos and other content. Also need to check the domain is available or not. following are the steps
-    a. /v1/wl/domain to create domain for the artist in domain it will create a page for the artist where fans can view all the block contents and collections of the artist that domain and domain will be like [domain.loop.fans].
+    a. GET /v1/wl/domain/check to check availability and correctness of the domain (please check whitelabel-api.md for more details of the api in the current directory)
+    b. POST /v1/wl/domain to create domain for the artist in domain it will create a page for the artist where fans can view all the block contents and collections of the artist that domain and domain will be like [domain.loop.fans]. (please check whitelabel-api.md for more details of the api in the current directory)
+    c. after the creation of domain an application should be made on this domain and should be publicly available on this domain by gving nginx settings
+    
+    
 3. create content blocks for domain
-    a. /v1/wl/content_blocks to create api
+    a. Post /v1/wl/content_blocks to create api
     b. /v1/wl/content_blocks/:domainId to get api
     c. /v1/wl/content_blocks/:domainId to update api
     d. /v1/wl/content_blocks/:domainId to delete api
@@ -69,4 +72,4 @@ function WalletApp() {
 
 ## Arena Module
 
-    Arena module is for fans to listen to music and participate in quests and earn rewards. It is a web application where fans can listen to music and participate in quests and earn rewards. In arena all artist's domains should be listed. Fans will be able to select the domain and view the content blocks and the collections of the artist. 
+    Arena module will provide whitelable for the artist to present his music videos or anything there, sofan will come and get these things from there. It will be a separate application from the studio and hosted on the domain which is set by the artist in his POST /v1/wl/domain api. The application will also provide NFT to purchase it by fans and get exclusive contents from the artists which will be segregated by paid and free collections
