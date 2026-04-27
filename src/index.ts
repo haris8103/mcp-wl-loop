@@ -189,7 +189,7 @@ const authMiddleware = async (req: express.Request, res: express.Response, next:
         token = req.headers.authorization;
     }
     const response = await axios({
-        url: `http://localhost:8080/v1/apps/verify`,
+        url: `http://api.loop.fans/v1/apps/verify`,
         method: "get",
         headers: { "x-api-key": token },
     });
