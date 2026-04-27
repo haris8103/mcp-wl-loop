@@ -251,7 +251,7 @@ app.get('/', authMiddleware, handleSessionRequest);
 app.delete('/', authMiddleware, handleSessionRequest);
 
 app.listen(PORT, () => {
-    console.log(`🚀 MCP Server running on http://localhost:${PORT}`);
+    console.log(`🚀 MCP Server running on http://0.0.0.0:${PORT}`);
 });
 
 // Handle server shutdown
