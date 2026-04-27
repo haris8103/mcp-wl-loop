@@ -217,6 +217,7 @@ const mcpPostHandler = async (req: express.Request, res: express.Response) => {
             onsessioninitialized: (sessionId) => {
                 transports[sessionId] = transport;
             },
+            allowedHosts: ["*"],
         });
 
         transport.onclose = () => {
