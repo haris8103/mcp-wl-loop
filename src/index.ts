@@ -195,7 +195,7 @@ const authMiddleware = async (req: express.Request, res: express.Response, next:
         token = req.headers.authorization;
     }
     const response = await axios({
-        url: `http://https://proalien-nevaeh-tachygraphical.ngrok-free.dev/v1/apps/verify`,
+        url: `https://proalien-nevaeh-tachygraphical.ngrok-free.dev/v1/apps/verify`,
         method: "get",
         headers: { "x-api-key": token },
     });
@@ -257,7 +257,7 @@ app.get('/', authMiddleware, handleSessionRequest);
 app.delete('/', authMiddleware, handleSessionRequest);
 
 app.listen(PORT, () => {
-    console.log(`🚀 MCP Server running on http://0.0.0.0:${PORT}`);
+    console.log(`🚀 MCP Server running on http://localhost:${PORT}`);
 });
 
 // Handle server shutdown
