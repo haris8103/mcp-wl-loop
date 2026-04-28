@@ -195,7 +195,7 @@ const authMiddleware = async (req: express.Request, res: express.Response, next:
         token = req.headers.authorization;
     }
     const response = await axios({
-        url: `http://api.loop.fans/v1/apps/verify`,
+        url: `http://https://proalien-nevaeh-tachygraphical.ngrok-free.dev/v1/apps/verify`,
         method: "get",
         headers: { "x-api-key": token },
     });
@@ -217,9 +217,6 @@ const mcpPostHandler = async (req: express.Request, res: express.Response) => {
             onsessioninitialized: (sessionId) => {
                 transports[sessionId] = transport;
             },
-
-            allowedHosts: ["*"],
-            allowedOrigins: ["*"]
         });
 
         transport.onclose = () => {

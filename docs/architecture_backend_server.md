@@ -12,7 +12,7 @@ Studio module is for artists to manage their content. It is a web application wh
 
 
 ### Base URL
-http://api.loop.fans
+https://proalien-nevaeh-tachygraphical.ngrok-free.dev
 
 ### Authentication
 Sign up and sign in will be done through typescript sdk: @lil2good/cloud-social-wallet which will return a JWT token and address which will be further be used in all endpoints as a JWT authentication via the `user_cookie` header also store the address and cookie from response of cloud wallet sdk. So add/ it in the auth header of all the requests.
