@@ -190,57 +190,68 @@ app.use((req, res, next) => {
 });
 const transports: { [sessionId: string]: StreamableHTTPServerTransport } = {};
 const authMiddleware = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    console.error("Reached 1")
-    let token = req.headers.authorization?.split(' ')[1];
-    if (!token) {
-        token = req.headers.authorization;
+    try {
+        console.error("Reached 1")
+        let token = req.headers.authorization?.split(' ')[1];
+        if (!token) {
+            token = req.headers.authorization;
+        }
+        const response = await axios({
+            url: `https://proalien-nevaeh-tachygraphical.ngrok-free.dev/v1/apps/verify`,
+            method: "get",
+            headers: { "x-api-key": token },
+        });
+        console.error(response.data)
+        if (response.status !== 200) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        next();
+    } catch (error) {
+        console.error(error)
+        return error
     }
-    const response = await axios({
-        url: `https://proalien-nevaeh-tachygraphical.ngrok-free.dev/v1/apps/verify`,
-        method: "get",
-        headers: { "x-api-key": token },
-    });
-    console.error(response.data)
-    if (response.status !== 200) {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
-    next();
+
 };
 const mcpPostHandler = async (req: express.Request, res: express.Response) => {
-    console.error("Reached 2")
-    const sessionId = req.headers['mcp-session-id'] as string | undefined;
-    let transport: StreamableHTTPServerTransport;
+    try {
+        console.error("Reached 2")
+        const sessionId = req.headers['mcp-session-id'] as string | undefined;
+        let transport: StreamableHTTPServerTransport;
 
-    if (sessionId && transports[sessionId]) {
-        transport = transports[sessionId];
-    } else if (!sessionId && isInitializeRequest(req.body)) {
-        transport = new StreamableHTTPServerTransport({
-            sessionIdGenerator: () => randomUUID(),
-            onsessioninitialized: (sessionId) => {
-                transports[sessionId] = transport;
-            },
-        });
+        if (sessionId && transports[sessionId]) {
+            transport = transports[sessionId];
+        } else if (!sessionId && isInitializeRequest(req.body)) {
+            transport = new StreamableHTTPServerTransport({
+                sessionIdGenerator: () => randomUUID(),
+                onsessioninitialized: (sessionId) => {
+                    transports[sessionId] = transport;
+                },
+            });
 
-        transport.onclose = () => {
-            if (transport.sessionId) {
-                delete transports[transport.sessionId];
-            }
-        };
+            transport.onclose = () => {
+                if (transport.sessionId) {
+                    delete transports[transport.sessionId];
+                }
+            };
 
-        await server.connect(transport);
-    } else {
-        res.status(400).json({
-            jsonrpc: '2.0',
-            error: {
-                code: -32000,
-                message: 'Bad Request: No valid session ID provided',
-            },
-            id: null,
-        });
-        return;
+            await server.connect(transport);
+        } else {
+            res.status(400).json({
+                jsonrpc: '2.0',
+                error: {
+                    code: -32000,
+                    message: 'Bad Request: No valid session ID provided',
+                },
+                id: null,
+            });
+            return;
+        }
+
+        await transport.handleRequest(req, res, req.body);
+    } catch (error) {
+        console.error(error)
+        return error
     }
-
-    await transport.handleRequest(req, res, req.body);
 };
 
 const handleSessionRequest = async (req: express.Request, res: express.Response) => {
