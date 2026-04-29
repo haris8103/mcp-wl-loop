@@ -190,7 +190,7 @@ app.use((req, res, next) => {
 });
 const transports: { [sessionId: string]: StreamableHTTPServerTransport } = {};
 const authMiddleware = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    console.log("Reached 1")
+    console.error("Reached 1")
     let token = req.headers.authorization?.split(' ')[1];
     if (!token) {
         token = req.headers.authorization;
@@ -207,7 +207,7 @@ const authMiddleware = async (req: express.Request, res: express.Response, next:
     next();
 };
 const mcpPostHandler = async (req: express.Request, res: express.Response) => {
-    console.log("Reached 1")
+    console.error("Reached 2")
     const sessionId = req.headers['mcp-session-id'] as string | undefined;
     let transport: StreamableHTTPServerTransport;
 
