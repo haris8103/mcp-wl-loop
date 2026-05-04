@@ -244,13 +244,8 @@ class InMemoryEventStore implements EventStore {
 
 console.log("Starting Streamable HTTP server...");
 
+// Express app with permissive CORS for testing with Inspector direct connect mode
 const app = express();
-
-app.use((req, res, next) => {
-    console.log(`[REQ] ${req.method} ${req.url}`);
-    next();
-});
-
 app.use(
     cors({
         origin: "*", // use "*" with caution in production
@@ -413,36 +408,20 @@ app.delete("/mcp", authMiddleware, async (req: Request, res: Response) => {
 });
 
 // Start the server
-const PORT1 = Number(process.env.PORT || 8080);
-const PORT2 = 3000;
-const HOST = "0.0.0.0";
-
-process.on("uncaughtException", (error) => {
-    console.error("UNCAUGHT EXCEPTION:", error);
+const PORT = process.env.PORT || 3001;
+const app_server = app.listen(PORT, () => {
+    console.error(`MCP Streamable HTTP Server listening on port ${PORT}`);
 });
-process.on("unhandledRejection", (reason, promise) => {
-    console.error("UNHANDLED REJECTION:", reason);
-});
-
-const app_server1 = app.listen(PORT1, HOST, () => {
-    console.error(`MCP Streamable HTTP Server listening on http://${HOST}:${PORT1}`);
-});
-
-if (PORT1 !== PORT2) {
-    app.listen(PORT2, HOST, () => {
-        console.error(`MCP Streamable HTTP Server also listening on http://${HOST}:${PORT2} as a fallback`);
-    });
-}
 
 // Handle server errors
-app_server1.on("error", (err: unknown) => {
+app_server.on("error", (err: unknown) => {
     const code =
         typeof err === "object" && err !== null && "code" in err
             ? (err as { code?: unknown }).code
             : undefined;
     if (code === "EADDRINUSE") {
         console.error(
-            `Failed to start: Port ${PORT1} is already in use. Set PORT to a free port or stop the conflicting process.`
+            `Failed to start: Port ${PORT} is already in use. Set PORT to a free port or stop the conflicting process.`
         );
     } else {
         console.error("HTTP server encountered an error while starting:", err);
