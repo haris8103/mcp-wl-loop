@@ -415,6 +415,14 @@ app.delete("/mcp", authMiddleware, async (req: Request, res: Response) => {
 // Start the server
 const PORT = process.env.PORT || 3001;
 const HOST = "0.0.0.0";
+
+process.on("uncaughtException", (error) => {
+    console.error("UNCAUGHT EXCEPTION:", error);
+});
+process.on("unhandledRejection", (reason, promise) => {
+    console.error("UNHANDLED REJECTION:", reason);
+});
+
 const app_server = app.listen(Number(PORT), HOST, () => {
     console.error(`MCP Streamable HTTP Server listening on http://${HOST}:${PORT}`);
 });
