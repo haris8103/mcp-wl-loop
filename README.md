@@ -103,3 +103,19 @@ The backend API is organized into the following categories:
 ## Development
 
 The main logic is located in `src/index.ts`. The documentation content is embedded within the resource registration in `src/index.ts` and also mirrored in the `docs/` directory for reference.
+
+
+# MCP client
+
+```json
+{
+    "mcpServers": {
+        "mcp-wl-loop": {
+            "serverUrl": "https://mcp-wl-loop-production.up.railway.app",
+            "headers": {
+                "Authorization": "Bearer G_a9Bun3EF5bFrvvumkFGRCYHn0h33XXP3hmhiZsnqLh_ZG6VIhIN9ftreNbsvBNqbHOYfe50ymu3dMd10UsuA",
+                "Content-Type": "application/json"
+            }
+        }
+    }
+}
