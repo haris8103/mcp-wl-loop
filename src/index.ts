@@ -206,11 +206,12 @@ const authMiddleware = async (req: express.Request, res: express.Response, next:
         }
         next();
     } catch (error) {
-        console.error(error)
-        return error
+        if (axios.isAxiosError(error)) {
+            return res.status(error.response?.status || 500).json({ error: error.response?.data || 'Verification failed' });
+        }
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
-
-};
+}
 
 // Simple in-memory event store for SSE resumability
 class InMemoryEventStore implements EventStore {
