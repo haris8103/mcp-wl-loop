@@ -409,9 +409,8 @@ app.delete("/mcp", authMiddleware, async (req: Request, res: Response) => {
 
 // Start the server
 const PORT = process.env.PORT || 3001;
-const HOST = "0.0.0.0";
-const app_server = app.listen(Number(PORT), HOST, () => {
-    console.error(`MCP Streamable HTTP Server listening on http://${HOST}:${PORT}`);
+const app_server = app.listen(Number(PORT), () => {
+    console.error(`MCP Streamable HTTP Server listening on port ${PORT}`);
 });
 
 // Handle server errors
