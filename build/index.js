@@ -185,8 +185,11 @@ class InMemoryEventStore {
     }
 }
 console.log("Starting Streamable HTTP server...");
-// Express app with permissive CORS for testing with Inspector direct connect mode
 const app = express();
+app.use((req, res, next) => {
+    console.log(`[REQ] ${req.method} ${req.url}`);
+    next();
+});
 app.use(cors({
     origin: "*", // use "*" with caution in production
     methods: "GET,POST,DELETE",
@@ -331,8 +334,9 @@ app.delete("/mcp", authMiddleware, async (req, res) => {
 });
 // Start the server
 const PORT = process.env.PORT || 3001;
-const app_server = app.listen(Number(PORT), () => {
-    console.error(`MCP Streamable HTTP Server listening on port ${PORT}`);
+const HOST = "0.0.0.0";
+const app_server = app.listen(Number(PORT), HOST, () => {
+    console.error(`MCP Streamable HTTP Server listening on http://${HOST}:${PORT}`);
 });
 // Handle server errors
 app_server.on("error", (err) => {
