@@ -333,7 +333,8 @@ app.delete("/mcp", authMiddleware, async (req, res) => {
     }
 });
 // Start the server
-const PORT = process.env.PORT || 3001;
+const PORT1 = Number(process.env.PORT || 8080);
+const PORT2 = 3000;
 const HOST = "0.0.0.0";
 process.on("uncaughtException", (error) => {
     console.error("UNCAUGHT EXCEPTION:", error);
@@ -341,16 +342,21 @@ process.on("uncaughtException", (error) => {
 process.on("unhandledRejection", (reason, promise) => {
     console.error("UNHANDLED REJECTION:", reason);
 });
-const app_server = app.listen(Number(PORT), HOST, () => {
-    console.error(`MCP Streamable HTTP Server listening on http://${HOST}:${PORT}`);
+const app_server1 = app.listen(PORT1, HOST, () => {
+    console.error(`MCP Streamable HTTP Server listening on http://${HOST}:${PORT1}`);
 });
+if (PORT1 !== PORT2) {
+    app.listen(PORT2, HOST, () => {
+        console.error(`MCP Streamable HTTP Server also listening on http://${HOST}:${PORT2} as a fallback`);
+    });
+}
 // Handle server errors
-app_server.on("error", (err) => {
+app_server1.on("error", (err) => {
     const code = typeof err === "object" && err !== null && "code" in err
         ? err.code
         : undefined;
     if (code === "EADDRINUSE") {
-        console.error(`Failed to start: Port ${PORT} is already in use. Set PORT to a free port or stop the conflicting process.`);
+        console.error(`Failed to start: Port ${PORT1} is already in use. Set PORT to a free port or stop the conflicting process.`);
     }
     else {
         console.error("HTTP server encountered an error while starting:", err);
