@@ -262,6 +262,10 @@ const transports: Map<string, StreamableHTTPServerTransport> = new Map<
     StreamableHTTPServerTransport
 >();
 
+// Health check endpoints for Railway
+app.get("/", (req, res) => res.status(200).send("OK"));
+app.get("/health", (req, res) => res.status(200).send("OK"));
+
 // Handle POST requests for client messages
 app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
     console.log("Received MCP POST request");
