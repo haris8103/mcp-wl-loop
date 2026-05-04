@@ -409,7 +409,7 @@ app.delete("/mcp", authMiddleware, async (req: Request, res: Response) => {
 
 // Start the server
 const PORT = parseInt(process.env.PORT || "3001");
-const IP_ADDRESS = process.env.IP_ADDRESS || "[IP_ADDRESS]";
+const IP_ADDRESS = process.env.IP_ADDRESS || "0.0.0.0";
 const app_server = app.listen(PORT, IP_ADDRESS, () => {
     console.error(`MCP Streamable HTTP Server listening on port ${PORT}`);
 });
