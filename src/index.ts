@@ -190,7 +190,6 @@ server.tool(
 
 const authMiddleware = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try {
-        console.error("Reached 1")
         let token = req.headers.authorization?.split(' ')[1];
         if (!token) {
             token = req.headers.authorization;
@@ -261,13 +260,20 @@ const transports: Map<string, StreamableHTTPServerTransport> = new Map<
     string,
     StreamableHTTPServerTransport
 >();
-
+const sessions: Map<string, string> = new Map<
+    string,
+    string
+>();
 // Handle POST requests for client messages
 app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
     console.error("Received MCP POST request");
     try {
         // Check for existing session ID
-        const sessionId = req.headers["mcp-session-id"] as string | undefined;
+        let token = req.headers.authorization?.split(' ')[1];
+        if (!token) {
+            token = req.headers.authorization;
+        }
+        const sessionId = sessions.get(token!!)
 
         let transport: StreamableHTTPServerTransport;
 
@@ -304,9 +310,7 @@ app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
 
             // Connect the transport to the MCP server BEFORE handling the request
             // so responses can flow back through the same transport
-            if (!server.isConnected()) {
-                await server.connect(transport);
-            }
+            await server.connect(transport);
             await transport.handleRequest(req, res);
             return;
         } else {

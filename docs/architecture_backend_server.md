@@ -59,16 +59,20 @@ function WalletApp() {
     a. GET /v1/wl/domain/check to check availability and correctness of the domain (please check whitelabel-api.md for more details of the api in the current directory)
     b. POST /v1/wl/domain to create domain for the artist in domain it will create a page for the artist where fans can view all the block contents and collections of the artist that domain and domain will be like [domain.loop.fans]. (please check whitelabel-api.md for more details of the api in the current directory)
     c. after the creation of domain an application should be made on this domain and should be publicly available on this domain by gving nginx settings
-    
+    d. GET /v1/wl/domain to get domain details and correctness of the domain (please check whitelabel-api.md for more details of the api in the current directory)
+    e. PATCH /v1/wl/domain/active_template/:domain to update domain active template (please check whitelabel-api.md for more details of the api in the current directory)
+    f. PATCH /v1/wl/domain/:domain to update domain configurations like logo, banner, website template, settings etc. (please check whitelabel-api.md for more details of the api in the current directory)
     
 3. create content blocks for domain
-    a. Post /v1/wl/content_blocks to create api
-    b. /v1/wl/content_blocks/:domainId to get api
-    c. /v1/wl/content_blocks/:domainId to update api
-    d. /v1/wl/content_blocks/:domainId to delete api
-4. after that there will be 2 sections 
-    a. collection for new music tracks, albums, videos, galleries etc also on creation collection an nft collection will be created which will allow user to buy nft to get access to these exclusive content
-    b. whitelable where will artist will create content blocks for arena and fascilitate the artist to promote there brand, music, videos from other platforms.
+    a. POST /v1/wl/content_blocks/:domainId to create content blocks which enables user to rebrand his work.(please check whitelabel-api.md for more details of the api in the current directory)
+    b. POST /v1/wl/content_blocks can also be used to create content blocks which enables user to rebrand his work.(please check whitelabel-api.md for more details of the api in the current directory)
+    c. GET /v1/wl/content_blocks/:domainId to get the details of the content blocks on the basis of domainId (please check whitelabel-api.md for more details of the api in the current directory)
+    d. PATCH /v1/wl/content_blocks/:id to update content blocks which enables user to rebrand his work.(please check whitelabel-api.md for more details of the api in the current directory)
+    e. PUT /v1/wl/content_blocks/:id/reorder to reorder content blocks which enables user to rebrand his work.(please check whitelabel-api.md for more details of the api in the current directory)
+
+4. In content blocks there are following types of blocks 
+    a. albumBlock:
+        1. POST /v1/blocks/album_block to create album block artist will be able to upload the block of images of the artist of his related work. (please check whitelabel-api.md for more details of the api in the current directory)
 
 ## Arena Module
 
