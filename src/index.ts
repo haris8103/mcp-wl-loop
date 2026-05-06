@@ -10,168 +10,18 @@ import express, { Request, Response } from "express";
 import { randomUUID } from "node:crypto";
 import cors from "cors";
 import * as fs from "fs";
+import { createServer } from "./server/index.js";
 
 dotenv.config();
 
 // const transportHeaders = new WeakMap<StreamableHTTPServerTransport, IncomingHttpHeaders>();
 // Create server instance
-const server = new McpServer({
-    name: "loopfans-wl-mcp-server",
-    version: "1.0.0",
-});
+// const server = new McpServer({
+//     name: "loopfans-wl-mcp-server",
+//     version: "1.0.0",
+// });
 
 
-
-// ============================================================================
-// MCP RESOURCES - API DOCUMENTATION
-// ============================================================================
-
-// API Overview Resource
-server.registerResource(
-    "API Overview",
-    "loopfans://api/backend-server",
-    {
-        description: "Loopfans Backend Server API overview and getting started guide",
-        mimeType: "text/markdown"
-    },
-    async () => {
-        try {
-            const content = await fs.promises.readFile(
-                "./docs/architecture_backend_server.md",
-                "utf-8"
-            );
-            return {
-                contents: [{
-                    uri: "loopfans://api/backend-server",
-                    mimeType: "text/markdown",
-                    text: content
-                }]
-            };
-        } catch (error) {
-            console.error("Error reading architecture_backend_server.md:", error);
-            return {
-                contents: [{
-                    uri: "loopfans://api/backend-server",
-                    mimeType: "text/markdown",
-                    text: "# Error\n\nFailed to load backend server API documentation."
-                }]
-            };
-        }
-    }
-);
-
-
-// User Info API Resource
-server.registerResource(
-    "User Info API",
-    "loopfans://api/user-info",
-    {
-        description: "Detailed API documentation for user info",
-        mimeType: "text/markdown"
-    },
-    async () => {
-        try {
-            const content = await fs.promises.readFile(
-                "./docs/user-info-api.md",
-                "utf-8"
-            );
-            return {
-                contents: [{
-                    uri: "loopfans://api/user-info",
-                    mimeType: "text/markdown",
-                    text: content
-                }]
-            };
-        } catch (error) {
-            console.error("Error reading user-info-api.md:", error);
-            return {
-                contents: [{
-                    uri: "loopfans://api/user-info",
-                    mimeType: "text/markdown",
-                    text: "# Error\n\nFailed to load User Info API documentation."
-                }]
-            };
-        }
-    }
-);
-
-// Fans & Creators API Resource
-server.registerResource(
-    "Fans & Creators API",
-    "loopfans://api/fans",
-    {
-        description: "Detailed API documentation for fans, creators, launchpad projects, and social features",
-        mimeType: "text/markdown"
-    },
-    async () => {
-        try {
-            const content = await fs.promises.readFile(
-                "./docs/fans-api.md",
-                "utf-8"
-            );
-            return {
-                contents: [{
-                    uri: "loopfans://api/fans",
-                    mimeType: "text/markdown",
-                    text: content
-                }]
-            };
-        } catch (error) {
-            console.error("Error reading fans-api.md:", error);
-            return {
-                contents: [{
-                    uri: "loopfans://api/fans",
-                    mimeType: "text/markdown",
-                    text: "# Error\n\nFailed to load Fans & Creators API documentation."
-                }]
-            };
-        }
-    }
-);
-
-// Collections API Resource
-server.registerResource(
-    "Collections API",
-    "loopfans://api/collections",
-    {
-        description: "NFT collection management API documentation",
-        mimeType: "text/markdown"
-    },
-    async () => {
-        try {
-            const content = await fs.promises.readFile(
-                "./docs/collections-api.md",
-                "utf-8"
-            );
-            return {
-                contents: [{
-                    uri: "loopfans://api/collections",
-                    mimeType: "text/markdown",
-                    text: content
-                }]
-            };
-        } catch (error) {
-            console.error("Error reading collections-api.md:", error);
-            return {
-                contents: [{
-                    uri: "loopfans://api/collections",
-                    mimeType: "text/markdown",
-                    text: "# Error\n\nFailed to load Collections API documentation."
-                }]
-            };
-        }
-    }
-);
-
-server.tool(
-    "ping",
-    "A simple ping tool to verify server connectivity",
-    async () => {
-        return {
-            content: [{ type: "text", text: "pong" }]
-        };
-    }
-);
 
 
 // ============================================================================
@@ -251,7 +101,7 @@ app.use(
         methods: "GET,POST,DELETE",
         preflightContinue: false,
         optionsSuccessStatus: 204,
-        exposedHeaders: ["mcp-session-id", "last-event-id", "mcp-protocol-version"],
+        exposedHeaders: ["mcp-session-id", "last-event-id"],
     })
 );
 
@@ -260,28 +110,21 @@ const transports: Map<string, StreamableHTTPServerTransport> = new Map<
     string,
     StreamableHTTPServerTransport
 >();
-const sessions: Map<string, string> = new Map<
-    string,
-    string
->();
+
 // Handle POST requests for client messages
 app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
     console.error("Received MCP POST request");
     try {
         // Check for existing session ID
-        let token = req.headers.authorization?.split(' ')[1];
-        if (!token) {
-            token = req.headers.authorization;
-        }
-        let sessionId = sessions.get(token!!)
-        console.log(token, sessionId)
+        const sessionId = req.headers["mcp-session-id"] as string | undefined;
+
         let transport: StreamableHTTPServerTransport;
 
         if (sessionId && transports.has(sessionId)) {
             // Reuse existing transport
             transport = transports.get(sessionId)!;
         } else if (!sessionId) {
-
+            const { server, cleanup } = createServer();
 
             // New initialization request
             const eventStore = new InMemoryEventStore();
@@ -304,8 +147,7 @@ app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
                         `Transport closed for session ${sid}, removing from transports map`
                     );
                     transports.delete(sid);
-                    sessions.delete(token!!);
-                    // cleanup(sid);
+                    cleanup(sid);
                 }
             };
 
@@ -313,7 +155,6 @@ app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
             // so responses can flow back through the same transport
             await server.connect(transport);
             await transport.handleRequest(req, res);
-            sessions.set(token!!, transport.sessionId!!);
             return;
         } else {
             // Invalid request - no session ID or not initialization request
@@ -350,11 +191,7 @@ app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
 // Handle GET requests for SSE streams
 app.get("/mcp", authMiddleware, async (req: Request, res: Response) => {
     console.error("Received MCP GET request");
-    let token = req.headers.authorization?.split(' ')[1];
-    if (!token) {
-        token = req.headers.authorization;
-    }
-    const sessionId = sessions.get(token!!)
+    const sessionId = req.headers["mcp-session-id"] as string | undefined;
     if (!sessionId || !transports.has(sessionId)) {
         res.status(400).json({
             jsonrpc: "2.0",
@@ -381,11 +218,7 @@ app.get("/mcp", authMiddleware, async (req: Request, res: Response) => {
 
 // Handle DELETE requests for session termination
 app.delete("/mcp", authMiddleware, async (req: Request, res: Response) => {
-    let token = req.headers.authorization?.split(' ')[1];
-    if (!token) {
-        token = req.headers.authorization;
-    }
-    const sessionId = sessions.get(token!!)
+    const sessionId = req.headers["mcp-session-id"] as string | undefined;
     if (!sessionId || !transports.has(sessionId)) {
         res.status(400).json({
             jsonrpc: "2.0",
