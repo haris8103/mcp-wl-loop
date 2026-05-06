@@ -273,7 +273,7 @@ app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
         if (!token) {
             token = req.headers.authorization;
         }
-        const sessionId = sessions.get(token!!)
+        let sessionId = sessions.get(token!!)
         console.log(token, sessionId)
         let transport: StreamableHTTPServerTransport;
 
@@ -312,7 +312,7 @@ app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
             // so responses can flow back through the same transport
             await server.connect(transport);
             await transport.handleRequest(req, res);
-            console.log("final", sessions.set(token!!, sessionId!!));
+            console.log("final", sessions.set(token!!, transport.sessionId!!));
             return;
         } else {
             // Invalid request - no session ID or not initialization request
