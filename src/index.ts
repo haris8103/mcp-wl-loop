@@ -304,6 +304,7 @@ app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
                         `Transport closed for session ${sid}, removing from transports map`
                     );
                     transports.delete(sid);
+                    sessions.delete(token!!);
                     // cleanup(sid);
                 }
             };
@@ -312,7 +313,7 @@ app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
             // so responses can flow back through the same transport
             await server.connect(transport);
             await transport.handleRequest(req, res);
-            console.log("final", sessions.set(token!!, transport.sessionId!!));
+            sessions.set(token!!, transport.sessionId!!);
             return;
         } else {
             // Invalid request - no session ID or not initialization request
