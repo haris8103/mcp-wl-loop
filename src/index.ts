@@ -312,7 +312,7 @@ app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
             // so responses can flow back through the same transport
             await server.connect(transport);
             await transport.handleRequest(req, res);
-            sessions.set(token!!, sessionId!!);
+            console.log("final", sessions.set(token!!, sessionId!!));
             return;
         } else {
             // Invalid request - no session ID or not initialization request
