@@ -242,7 +242,7 @@ class InMemoryEventStore implements EventStore {
     }
 }
 
-console.log("Starting Streamable HTTP server...");
+console.error("Starting Streamable HTTP server...");
 
 // Express app with permissive CORS for testing with Inspector direct connect mode
 const app = express();
@@ -262,13 +262,9 @@ const transports: Map<string, StreamableHTTPServerTransport> = new Map<
     StreamableHTTPServerTransport
 >();
 
-// Health check endpoints for Railway
-app.get("/", (req, res) => res.status(200).send("OK"));
-app.get("/health", (req, res) => res.status(200).send("OK"));
-
 // Handle POST requests for client messages
 app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
-    console.log("Received MCP POST request");
+    console.error("Received MCP POST request");
     try {
         // Check for existing session ID
         const sessionId = req.headers["mcp-session-id"] as string | undefined;
@@ -289,7 +285,7 @@ app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
                 onsessioninitialized: (sessionId: string) => {
                     // Store the transport by session ID when a session is initialized
                     // This avoids race conditions where requests might come in before the session is stored
-                    console.log(`Session initialized with ID: ${sessionId}`);
+                    console.error(`Session initialized with ID: ${sessionId}`);
                     transports.set(sessionId, transport);
                 },
             });
@@ -298,7 +294,7 @@ app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
             server.server.onclose = async () => {
                 const sid = transport.sessionId;
                 if (sid && transports.has(sid)) {
-                    console.log(
+                    console.error(
                         `Transport closed for session ${sid}, removing from transports map`
                     );
                     transports.delete(sid);
@@ -308,7 +304,9 @@ app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
 
             // Connect the transport to the MCP server BEFORE handling the request
             // so responses can flow back through the same transport
-            await server.connect(transport);
+            if (!server.isConnected()) {
+                await server.connect(transport);
+            }
             await transport.handleRequest(req, res);
             return;
         } else {
@@ -328,7 +326,7 @@ app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
         // The existing transport is already connected to the server
         await transport.handleRequest(req, res);
     } catch (error) {
-        console.log("Error handling MCP request:", error);
+        console.error("Error handling MCP request:", error);
         if (!res.headersSent) {
             res.status(500).json({
                 jsonrpc: "2.0",
@@ -345,7 +343,7 @@ app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
 
 // Handle GET requests for SSE streams
 app.get("/mcp", authMiddleware, async (req: Request, res: Response) => {
-    console.log("Received MCP GET request");
+    console.error("Received MCP GET request");
     const sessionId = req.headers["mcp-session-id"] as string | undefined;
     if (!sessionId || !transports.has(sessionId)) {
         res.status(400).json({
@@ -362,9 +360,9 @@ app.get("/mcp", authMiddleware, async (req: Request, res: Response) => {
     // Check for Last-Event-ID header for resumability
     const lastEventId = req.headers["last-event-id"] as string | undefined;
     if (lastEventId) {
-        console.log(`Client reconnecting with Last-Event-ID: ${lastEventId}`);
+        console.error(`Client reconnecting with Last-Event-ID: ${lastEventId}`);
     } else {
-        console.log(`Establishing new SSE stream for session ${sessionId}`);
+        console.error(`Establishing new SSE stream for session ${sessionId}`);
     }
 
     const transport = transports.get(sessionId);
@@ -386,13 +384,13 @@ app.delete("/mcp", authMiddleware, async (req: Request, res: Response) => {
         return;
     }
 
-    console.log(`Received session termination request for session ${sessionId}`);
+    console.error(`Received session termination request for session ${sessionId}`);
 
     try {
         const transport = transports.get(sessionId);
         await transport!.handleRequest(req, res);
     } catch (error) {
-        console.log("Error handling session termination:", error);
+        console.error("Error handling session termination:", error);
         if (!res.headersSent) {
             res.status(500).json({
                 jsonrpc: "2.0",
@@ -433,19 +431,19 @@ app_server.on("error", (err: unknown) => {
 
 // Handle server shutdown
 process.on("SIGINT", async () => {
-    console.log("Shutting down server...");
+    console.error("Shutting down server...");
 
     // Close all active transports to properly clean up resources
     for (const sessionId in transports) {
         try {
-            console.log(`Closing transport for session ${sessionId}`);
+            console.error(`Closing transport for session ${sessionId}`);
             await transports.get(sessionId)!.close();
             transports.delete(sessionId);
         } catch (error) {
-            console.log(`Error closing transport for session ${sessionId}:`, error);
+            console.error(`Error closing transport for session ${sessionId}:`, error);
         }
     }
 
-    console.log("Server shutdown complete");
+    console.error("Server shutdown complete");
     process.exit(0);
 });
