@@ -274,7 +274,7 @@ app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
             token = req.headers.authorization;
         }
         const sessionId = sessions.get(token!!)
-
+        console.log(token, sessionId)
         let transport: StreamableHTTPServerTransport;
 
         if (sessionId && transports.has(sessionId)) {
@@ -349,7 +349,11 @@ app.post("/mcp", authMiddleware, async (req: Request, res: Response) => {
 // Handle GET requests for SSE streams
 app.get("/mcp", authMiddleware, async (req: Request, res: Response) => {
     console.error("Received MCP GET request");
-    const sessionId = req.headers["mcp-session-id"] as string | undefined;
+    let token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+        token = req.headers.authorization;
+    }
+    const sessionId = sessions.get(token!!)
     if (!sessionId || !transports.has(sessionId)) {
         res.status(400).json({
             jsonrpc: "2.0",
@@ -376,7 +380,11 @@ app.get("/mcp", authMiddleware, async (req: Request, res: Response) => {
 
 // Handle DELETE requests for session termination
 app.delete("/mcp", authMiddleware, async (req: Request, res: Response) => {
-    const sessionId = req.headers["mcp-session-id"] as string | undefined;
+    let token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+        token = req.headers.authorization;
+    }
+    const sessionId = sessions.get(token!!)
     if (!sessionId || !transports.has(sessionId)) {
         res.status(400).json({
             jsonrpc: "2.0",
