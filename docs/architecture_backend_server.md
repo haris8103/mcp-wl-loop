@@ -73,15 +73,15 @@ function WalletApp() {
 4. In content blocks there are following types of blocks 
 
     a. albumBlock:
-        1. POST /v1/blocks/album_block endpoint to create album block artist will be able to upload the block of images of the artist of his related work (please check resource whitelabel-api.md for more details of the api). To upload files of the tracks please use POST v1/file/upload endpoint first and get file id then send it in the album_block creation endpoint (for more details please visit the resource files.md file).
-        2. PATCH /v1/blocks/album_block/:id endpoint to update album block (please check resource whitelabel-api.md for more details of the api). To upload files of the tracks please use POST v1/file/upload endpoint first and get file id then send it in the album_block update endpoint (for more details please visit the resource files.md file).
+        1. POST /v1/blocks/album_block endpoint to create album block artist will be able to upload the block of images of the artist of his related work (please check resource whitelabel-api.md for more details of the api). To upload files of the tracks please use POST v1/file/upload endpoint first and get file id then send it in the album_block creation endpoint (for more details please visit the resource file-api.md file).
+        2. PATCH /v1/blocks/album_block/:id endpoint to update album block (please check resource whitelabel-api.md for more details of the api). To upload files of the tracks please use POST v1/file/upload endpoint first and get file id then send it in the album_block update endpoint (for more details please visit the resource file-api.md file).
         3. GET /v1/wl/content_blocks/:domainId endpoint to get the details of the album block on the basis of domainId (please check resource whitelabel-api.md for more details of the api)
         4. DELETE /v1/blocks/:id endpoint to delete the content block of the album block  in the directus(please check resource whitelabel-api.md for more details of the api)
         5. PATCH /v1/blocks/update_status/:id endpoint to update status of album block (please check resource whitelabel-api.md for more details of the api)
 
     b. tracksBlock:
-        1. POST /v1/blocks/tracks_block to create tracks block artist will be able to upload the block of images of the artist of his related work (please check resource whitelabel-api.md for more details of the api). To upload files of the tracks please use POST v1/file/upload endpoint first and get file id and send it in the tracks_block creation endpoint (for more details please visit the resource files.md file).
-        2. PUT /v1/blocks/tracks_block/:id to update track block (please check resource whitelabel-api.md for more details of the api). To upload new or update files of the tracks please use POST v1/file/upload endpoint first and get file id then send it in the tracks_block update endpoint (for more details please visit the resource files.md file)
+        1. POST /v1/blocks/tracks_block to create tracks block artist will be able to upload the block of images of the artist of his related work (please check resource whitelabel-api.md for more details of the api). To upload files of the tracks please use POST v1/file/upload endpoint first and get file id and send it in the tracks_block creation endpoint (for more details please visit the resource file-api.md file).
+        2. PUT /v1/blocks/tracks_block/:id to update track block (please check resource whitelabel-api.md for more details of the api). To upload new or update files of the tracks please use POST v1/file/upload endpoint first and get file id then send it in the tracks_block update endpoint (for more details please visit the resource file-api.md file)
         3. GET /v1/wl/content_blocks/:domainId to get the details of the track block on the basis of domainId (please check resource whitelabel-api.md for more details of the api)
         4. DELETE /v1/blocks/:id to delete the content block of the track block  in the directus(please check resource whitelabel-api.md for more details of the api)
         5. PATCH /v1/blocks/update_status/:id to update status of track block (please check resource whitelabel-api.md for more details of the api)
@@ -101,19 +101,35 @@ function WalletApp() {
         5. PATCH /v1/blocks/update_status/:id endpoint to update status of contact block (please check resource whitelabel-api.md for more details of the api)
 
     e. pushFmBlock
-        1. POST /v1/blocks/push_fm_block endpoint to create push fm block artist will be able to share the embed url of his push fm and it will be displayed in the whitelabel page of the artist (please check resource whitelabel-api.md for more details of the api). To upload the image for pushFM block please use the post /v1/file/upload endpoint first and get the file id (for more details please visit the resource files.md file) and send it the pushFM creation endpoint.
-        2. PATCH /v1/blocks/push_fm_block/:id endpoint to update push fm block (please check resource whitelabel-api.md for more details of the api). To upload/change the image for pushFM block please use the post /v1/file/upload endpoint first and get the file id (for more details please visit the resource files.md file) and send it the pushFM update endpoint
+        1. POST /v1/blocks/push_fm_block endpoint to create push fm block artist will be able to share the embed url of his push fm and it will be displayed in the whitelabel page of the artist (please check resource whitelabel-api.md for more details of the api). To upload the image for pushFM block please use the post /v1/file/upload endpoint first and get the file id (for more details please visit the resource file-api.md file) and send it the pushFM creation endpoint.
+        2. PATCH /v1/blocks/push_fm_block/:id endpoint to update push fm block (please check resource whitelabel-api.md for more details of the api). To upload/change the image for pushFM block please use the post /v1/file/upload endpoint first and get the file id (for more details please visit the resource file-api.md file) and send it the pushFM update endpoint
         3. GET /v1/wl/content_blocks/:domainId endpoint to get the details of the push fm block on the basis of domainId (please check resource whitelabel-api.md for more details of the api)
         4. DELETE /v1/blocks/:id endpoint to delete the content block of the push fm block  in the directus(please check resource whitelabel-api.md for more details of the api)
         5. PATCH /v1/blocks/update_status/:id endpoint to update status of push fm block (please check resource whitelabel-api.md for more details of the api)
 
     f. bannerBlock
-        1. POST /v1/blocks/banner_block endpoint to create banner block artist will be able to share the embed url of his banner and it will be displayed in the whitelabel page of the artist (please check resource whitelabel-api.md for more details of the api). To upload the banner image use post /v1/file/upload endpoint first and get the file id and send it in the banner creation endpoint(for more details please visit the resource files.md file).
-        2. PATCH /v1/blocks/banner_block/:id endpoint to update banner block (please check resource whitelabel-api.md for more details of the api). To upload/change the image for banner block please use post /v1/file/upload endpoint first and get the file id and send it in the banner update endpoint(for more details please visit the resource files.md file).
+        1. POST /v1/blocks/banner_block endpoint to create banner block artist will be able to share the embed url of his banner and it will be displayed in the whitelabel page of the artist (please check resource whitelabel-api.md for more details of the api). To upload the banner image use post /v1/file/upload endpoint first and get the file id and send it in the banner creation endpoint(for more details please visit the resource file-api.md file).
+        2. PATCH /v1/blocks/banner_block/:id endpoint to update banner block (please check resource whitelabel-api.md for more details of the api). To upload/change the image for banner block please use post /v1/file/upload endpoint first and get the file id and send it in the banner update endpoint(for more details please visit the resource file-api.md file).
         3. GET /v1/wl/content_blocks/:domainId endpoint to get the details of the banner block on the basis of domainId (please check resource whitelabel-api.md for more details of the api)
         4. DELETE /v1/blocks/:id endpoint to delete the content block of the banner block  in the directus(please check resource whitelabel-api.md for more details of the api)
         5. PATCH /v1/blocks/update_status/:id endpoint to update status of banner block (please check resource whitelabel-api.md for more details of the api)
 
-## Arena Module
+5. Event module is where artist can make there events for upcoming items.
+    1. POST /v1/wl/events endpoint to create an event for upcoming items (please check resource whitelabel-api.md for more details of the api).
+    2. PATCH /v1/wl/events/:id endpoint to edit/update an existing event (please check resource whitelabel-api.md for more details of the api).
+    3. DELETE /v1/wl/events/:id endpoint to delete an event (please check resource whitelabel-api.md for more details of the api).
+    4. GET /v1/wl/events endpoint to get all events of an artist (please check resource whitelabel-api.md for more details of the api).
+    5. POST /v1/wl/events/:id/items endpoint to create an item for an event (please check resource whitelabel-api.md for more details of the api).
+    6. PATCH /v1/wl/events/:eventId/items/:itemId endpoint to edit/update an item for an event (please check resource whitelabel-api.md for more details of the api).
+    7. DELETE /v1/wl/events/:eventId/items/:itemId endpoint to delete an item for an event (please check resource whitelabel-api.md for more details of the api).
+
+6. Create Launchpads for nft launch with exclusive content for fans. There will be two types of launchpads paid drops and free drops.
+    1. POST /v1/launchpad/createCollection endpoint to create a newlaunchpad feature for fans it can be paid or free depends on therequests parameters (please read resource launchpad-api.md for moredetails of the api).
+    2. POST /v1/launchpad/editCollection/:id endpoint to edit an existinglaunchpad (please read resource launchpad-api.md for more details ofthe api).
+    3. POST /v1/launchpad/editCollection/update-status/:id to update statusof launchpad (please read resource launchpad-api.md for more details ofthe api).
+    4. GET /v1/launchpad/:id to get details of launchpad (please readresource launchpad-api.md for more details of the api)
+
+
+## Fan Page (Arena)
 
     Arena module will provide whitelable for the artist to present his music videos or anything there, sofan will come and get these things from there. It will be a separate application from the studio and hosted on the domain which is set by the artist in his POST /v1/wl/domain api. The application will also provide NFT to purchase it by fans and get exclusive contents from the artists which will be segregated by paid and free collections
