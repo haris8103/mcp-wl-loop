@@ -183,100 +183,100 @@ view analytics, best selling drops/collections, payout history and monetization.
 
     b. tracksBlock:
 
-        1. POST /v1/blocks/tracks_block to create tracks block artist will be able to upload the block of 
+      1. POST /v1/blocks/tracks_block to create tracks block artist will be able to upload the block of 
         images of the artist of his related work (please check resource whitelabel-api.md for more details 
         of the api). 
 
-        2. PUT /v1/blocks/tracks_block/:id to update track block (please check resource whitelabel-api.md 
+      2. PUT /v1/blocks/tracks_block/:id to update track block (please check resource whitelabel-api.md 
         for more details of the api). 
 
-        3. GET /v1/wl/content_blocks/:domainId to get the details of the track block on the basis of 
+      3. GET /v1/wl/content_blocks/:domainId to get the details of the track block on the basis of 
         domainId (please check resource whitelabel-api.md for more details of the api)
 
-        4. DELETE /v1/blocks/:id to delete the content block of the track block  in the directus(please 
+      4. DELETE /v1/blocks/:id to delete the content block of the track block  in the directus(please 
         check resource whitelabel-api.md for more details of the api)
 
-        5. PATCH /v1/blocks/update_status/:id to update status of track block (please check resource 
+      5. PATCH /v1/blocks/update_status/:id to update status of track block (please check resource 
         whitelabel-api.md for more details of the api)
 
     c. youtubeBlock:
 
-        1. POST /v1/blocks/youtube_block endpoint to create youtube block artist will be able to share the 
+      1. POST /v1/blocks/youtube_block endpoint to create youtube block artist will be able to share the 
         embed url of his youtube videos and it will be displayed in the whitelabel page of the artist 
         (please check resource whitelabel-api.md for more details of the api).
 
-        2. PUT /v1/blocks/youtube_block/:id endpoint to update youtube block (please check resource 
+      2. PUT /v1/blocks/youtube_block/:id endpoint to update youtube block (please check resource 
         whitelabel-api.md for more details of the api).
 
-        3. GET /v1/wl/content_blocks/:domainId endpoint to get the details of the youtube block on the 
+      3. GET /v1/wl/content_blocks/:domainId endpoint to get the details of the youtube block on the 
         basis of domainId (please check resource whitelabel-api.md for more details of the api)
 
-        4. DELETE /v1/blocks/:id endpoint to delete the content block of the youtube block  in the directus
+      4. DELETE /v1/blocks/:id endpoint to delete the content block of the youtube block  in the directus
         (please check resource whitelabel-api.md for more details of the api)
 
-        5. PATCH /v1/blocks/update_status/:id endpoint to update status of youtube block (please check 
+      5. PATCH /v1/blocks/update_status/:id endpoint to update status of youtube block (please check 
         resource whitelabel-api.md for more details of the api)
 
     d. contactBlock:
 
-        1. POST /v1/blocks/contact_block endpoint to create contact block artist will be able to share his
+      1. POST /v1/blocks/contact_block endpoint to create contact block artist will be able to share his
         contact information like email/custom url (please check resource whitelabel-api.md for more 
         details of the api).
 
-        2. PUT /v1/blocks/contact_block/:id endpoint to update contact block (please check resource 
+      2. PUT /v1/blocks/contact_block/:id endpoint to update contact block (please check resource 
         whitelabel-api.md for more details of the api).
 
-        3. GET /v1/wl/content_blocks/:domainId endpoint to get the details of the contact block on the 
+      3. GET /v1/wl/content_blocks/:domainId endpoint to get the details of the contact block on the 
         basis of domainId (please check resource whitelabel-api.md for more details of the api)
 
-        4. DELETE /v1/blocks/:id endpoint to delete the content block of the contact block  in the directus
+      4. DELETE /v1/blocks/:id endpoint to delete the content block of the contact block  in the directus
         (please check resource whitelabel-api.md for more details of the api)
 
-        5. PATCH /v1/blocks/update_status/:id endpoint to update status of contact block (please check 
+      5. PATCH /v1/blocks/update_status/:id endpoint to update status of contact block (please check 
         resource whitelabel-api.md for more details of the api)
 
     e. pushFmBlock:
 
-        1. POST /v1/blocks/push_fm_block endpoint to create push fm block artist will be able to share the
+      1. POST /v1/blocks/push_fm_block endpoint to create push fm block artist will be able to share the
         embed url of his push fm and it will be displayed in the whitelabel page of the artist (please 
         check resource whitelabel-api.md for more details of the api). To upload the image for pushFM block 
         please use the post /v1/file/upload endpoint first and get the file id (for more details please 
         visit the resource file-api.md file) and send it the pushFM creation endpoint.
 
-        2. PATCH /v1/blocks/push_fm_block/:id endpoint to update push fm block (please check resource 
+      2. PATCH /v1/blocks/push_fm_block/:id endpoint to update push fm block (please check resource 
         whitelabel-api.md for more details of the api). To upload/change the image for pushFM block please 
         use the post /v1/file/upload endpoint first and get the file id (for more details please visit the
         resource file-api.md file) and send it the pushFM update endpoint
 
-        3. GET /v1/wl/content_blocks/:domainId endpoint to get the details of the push fm block on the 
+      3. GET /v1/wl/content_blocks/:domainId endpoint to get the details of the push fm block on the 
         basis of domainId (please check resource whitelabel-api.md for more details of the api)
 
-        4. DELETE /v1/blocks/:id endpoint to delete the content block of the push fm block  in the directus
+      4. DELETE /v1/blocks/:id endpoint to delete the content block of the push fm block  in the directus
         (please check resource whitelabel-api.md for more details of the api)
 
-        5. PATCH /v1/blocks/update_status/:id endpoint to update status of push fm block (please check 
+      5. PATCH /v1/blocks/update_status/:id endpoint to update status of push fm block (please check 
         resource whitelabel-api.md for more details of the api)
 
     f. bannerBlock:
 
-        1. POST /v1/blocks/banner_block endpoint to create banner block artist will be able to share the 
+      1. POST /v1/blocks/banner_block endpoint to create banner block artist will be able to share the 
         embed url of his banner and it will be displayed in the whitelabel page of the artist (please check
         resource whitelabel-api.md for more details of the api). To upload the banner image use post /v1/
         file/upload endpoint first and get the file id and send it in the banner creation endpoint(for more 
         details please visit the resource file-api.md file).
 
-        2. PATCH /v1/blocks/banner_block/:id endpoint to update banner block (please check resource 
+      2. PATCH /v1/blocks/banner_block/:id endpoint to update banner block (please check resource 
         whitelabel-api.md for more details of the api). To upload/change the image for banner block please 
         use post /v1/file/upload endpoint first and get the file id and send it in the banner update 
         endpoint(for more details please visit the resource file-api.md file).
 
-        3. GET /v1/wl/content_blocks/:domainId endpoint to get the details of the banner block on the basis
+      3. GET /v1/wl/content_blocks/:domainId endpoint to get the details of the banner block on the basis
         of domainId (please check resource whitelabel-api.md for more details of the api)
 
-        4. DELETE /v1/blocks/:id endpoint to delete the content block of the banner block  in the directus
+      4. DELETE /v1/blocks/:id endpoint to delete the content block of the banner block  in the directus
         (please check resource whitelabel-api.md for more details of the api)
 
-        5. PATCH /v1/blocks/update_status/:id endpoint to update status of banner block (please check 
+      5. PATCH /v1/blocks/update_status/:id endpoint to update status of banner block (please check 
         resource whitelabel-api.md for more details of the api)
 
 8. Event module is where artist can make there events for upcoming items.
@@ -355,62 +355,62 @@ launchpads paid drops and free drops.
 
     a. Music Album Drop:
 
-        1. POST /v1/benefit/album to create/update music album drop (please read resource arena-api.md for
+      1. POST /v1/benefit/album to create/update music album drop (please read resource arena-api.md for
         more details of the api).
 
-        2. GET /v1/indexer/nftDetail/:id to get details of music album drop (please read resource arena-api.
+      2. GET /v1/indexer/nftDetail/:id to get details of music album drop (please read resource arena-api.
         md for more details of the api).
 
-        3. DELETE /v1/benefit/delete endpoint to delete benefit/drop (please read resource arena-api.md for
+      3. DELETE /v1/benefit/delete endpoint to delete benefit/drop (please read resource arena-api.md for
         more details of the api)
 
-        4. GET /v1/fans/fans_launchpad/:id endpoint to get details of music album drop (please read 
+      4. GET /v1/fans/fans_launchpad/:id endpoint to get details of music album drop (please read 
         resource arena-api.md for more details of the api)
         
 
     b. Video Drop:
 
-        1. POST /v1/benefit/video to create/update video drop (please read resource arena-api.md for more
+      1. POST /v1/benefit/video to create/update video drop (please read resource arena-api.md for more
          details of the api).
 
-        2. GET /v1/indexer/nftDetail/:id to get details of video drop (please read resource arena-api.md 
+      2. GET /v1/indexer/nftDetail/:id to get details of video drop (please read resource arena-api.md 
         for more details of the api).
 
-        3. DELETE /v1/benefit/delete endpoint to delete benefit/drop (please read resource arena-api.md for
+      3. DELETE /v1/benefit/delete endpoint to delete benefit/drop (please read resource arena-api.md for
          more details of the api)
 
-        4. GET /v1/fans/fans_launchpad/:id endpoint to get details of video drop (please read resource 
+      4. GET /v1/fans/fans_launchpad/:id endpoint to get details of video drop (please read resource 
         arena-api.md for more details of the api)
 
     c. Files Drop:
 
-        1. POST /v1/benefit/files to create/update files drop (please read resource arena-api.md for more 
+      1. POST /v1/benefit/files to create/update files drop (please read resource arena-api.md for more 
         details of the api).
 
-        2. GET /v1/indexer/nftDetail/:id to get details of files drop (please read resource arena-api.md 
+      2. GET /v1/indexer/nftDetail/:id to get details of files drop (please read resource arena-api.md 
         for more details of the api).
 
-        3. DELETE /v1/benefit/delete endpoint to delete benefit/drop (please read resource arena-api.md for 
+      3. DELETE /v1/benefit/delete endpoint to delete benefit/drop (please read resource arena-api.md for 
         more details of the api)
 
-        4. GET /v1/fans/fans_launchpad/:id endpoint to get details of files drop (please read resource 
+      4. GET /v1/fans/fans_launchpad/:id endpoint to get details of files drop (please read resource 
         arena-api.md for more details of the api)
     
     d. Gallery Drop:
 
-        1. POST /v1/benefit/gallery to create/update gallery drop (please read resource arena-api.md for 
+      1. POST /v1/benefit/gallery to create/update gallery drop (please read resource arena-api.md for 
         more details of the api).
 
-        2. POST /v1/benefit/gallery/:id endpoint to delete gallery item (please read resource arena-api.md 
+      2. POST /v1/benefit/gallery/:id endpoint to delete gallery item (please read resource arena-api.md 
         for more details of the api).
 
-        3. GET /v1/indexer/nftDetail/:id to get details of gallery drop (please read resource arena-api.md 
+      3. GET /v1/indexer/nftDetail/:id to get details of gallery drop (please read resource arena-api.md 
         for more details of the api).
 
-        4. DELETE /v1/benefit/delete endpoint to delete benefit/drop (please read resource arena-api.md for
+      4. DELETE /v1/benefit/delete endpoint to delete benefit/drop (please read resource arena-api.md for
          more details of the api)
 
-        5. GET /v1/fans/fans_launchpad/:id endpoint to get details of gallery drop (please read resource 
+      5. GET /v1/fans/fans_launchpad/:id endpoint to get details of gallery drop (please read resource 
         arena-api.md for more details of the api)
 
 12. In studio fan signup form feature will be available for incoming events for the registeration users in
@@ -446,4 +446,4 @@ launchpads paid drops and free drops.
 
 ## Fan Page (Arena)
 
-    Arena module will provide whitelable for the artist to present his music videos or anything there, sofan will come and get these things from there. It will be a separate application from the studio and hosted on the domain which is set by the artist in his POST /v1/wl/domain api. The application will also provide NFT to purchase it by fans and get exclusive contents from the artists which will be segregated by paid and free collections
+   Arena module will provide whitelable for the artist to present his music videos or anything there, sofan will come and get these things from there. It will be a separate application from the studio and hosted on the domain which is set by the artist in his POST /v1/wl/domain api. The application will also provide NFT to purchase it by fans and get exclusive contents from the artists which will be segregated by paid and free collections
