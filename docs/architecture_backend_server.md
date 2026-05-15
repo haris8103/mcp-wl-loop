@@ -88,18 +88,27 @@ content. Also need to check the domain is available or not. following are the st
 
 3. Plan (subscription module Free/trial/pro)
     
-    a. POST /v1/user/billing/upgrade to upgrade to the desired plan.
+    a. POST /v1/user/billing/upgrade to upgrade to the desired plan which will take to the stripe payment 
+    gateway to complete the payment.
     
     b. GET /v1/tiers-n-subscriptions to get all the subscripitons plan details.
     
     c. GET /v1/user/billing/plan to get user's current plan.
-
+    
 
 4. Feature Limit In this we will tell the system that how much features he can utilize according to his/her
  subscription plan.
 
     a. GET /v1/feature_limits to get the limit of the user (please refer to the resource feature_limits-api.
-    md for more details of the api)
+    md for more details of the api) e.g. Free users will get following features
+    
+        $0/monthly
+        Analytics - locked
+        Content Blocks - 4 Maximum
+        Events - 1 Maximum
+        Free collections - 2 Maximum
+        Forms - 1 Maximum
+        Fans - Data for 25 Fans
 
 5. Dashboard may contain the analytics of the fans growth graph, website views graph, fans summary, website 
 view analytics, best selling drops/collections, payout history and monetization.
