@@ -127,9 +127,16 @@ function WalletApp() {
 
     a. albumBlock:
     
-        1. POST /v1/blocks/album_block endpoint to create album block artist will be able to upload the block of images of the artist of his related work (please check resource whitelabel-api.md for more details of the api). To upload files of the tracks please use POST v1/file/upload endpoint first and get file id then send it in the album_block creation endpoint (for more details please visit the resource file-api.md file).
+        1. POST /v1/blocks/album_block endpoint to create album block artist will be able to upload the 
+        block of images of the artist of his related work (please check resource whitelabel-api.md for more 
+        details of the api). To upload files of the tracks please use POST v1/file/upload endpoint first 
+        and get file id then send it in the album_block creation endpoint (for more details please visit 
+        the resource file-api.md file).
 
-        2. PATCH /v1/blocks/album_block/:id endpoint to update album block (please check resource whitelabel-api.md for more details of the api). To upload files of the tracks please use POST v1/file/upload endpoint first and get file id then send it in the album_block update endpoint (for more details please visit the resource file-api.md file).
+        2. PATCH /v1/blocks/album_block/:id endpoint to update album block (please check resource 
+        whitelabel-api.md for more details of the api). To upload files of the tracks please use POST v1/
+        file/upload endpoint first and get file id then send it in the album_block update endpoint (for 
+        more details please visit the resource file-api.md file).
 
         3. GET /v1/wl/content_blocks/:domainId endpoint to get the details of the album block on the basis of domainId (please check resource whitelabel-api.md for more details of the api)
 
