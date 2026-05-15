@@ -56,15 +56,23 @@ function WalletApp() {
 
 1. signup/signin with cloud wallet sdk
 2. creating domain for artist arena where fan will be able to view music, galleries, videos and other content. Also need to check the domain is available or not. following are the steps
-    #### GET /v1/wl/domain/check endpoint to check availability and correctness of the domain (please check resource whitelabel-api.md for more details of the api)
-    #### POST /v1/wl/domain endpoint to create domain for the artist in domain it will create a page for the artist where fans can view all the block contents and collections of the artist that domain and domain will be like [domain.loop.fans]. (please check resource whitelabel-api.md for more details of the api)
-    #### after the creation of domain an application should be made on this domain and should be publicly available on this domain by gving nginx settings
-    #### GET /v1/wl/domain endpoint to get domain details and correctness of the domain (please check resource whitelabel-api.md for more details of the api)
-    #### PATCH /v1/wl/domain/active_template/:domain endpoint to update domain active template (please check resource whitelabel-api.md for more details of the api)
-    #### PATCH /v1/wl/domain/:domain endpoint to update domain configurations like logo, banner, website template, settings etc. (please check resource whitelabel-api.md for more details of the api)
-    #### GET /v1/indexer/nfts/owner/nfts/owner/:address/:page/:limit to get the details of the nfts owned by the artist. (please check resource indexer-api.md for more details of the api)
-    #### GET /v1/templates to get the list of the templates for the artist domain page. (please check resource whitelabel-api.md for more details of the api)
-    #### PATCH /v1/wl/domain/active_template/:domain endpoint to udpate the domain template with the selected website template. (please check resource whitelabel-api.md for more details of the api)
+    a. GET /v1/wl/domain/check endpoint to check availability and correctness of the domain (please check resource whitelabel-api.md for more details of the api)
+
+    b. POST /v1/wl/domain endpoint to create domain for the artist in domain it will create a page for the artist where fans can view all the block contents and collections of the artist that domain and domain will be like [domain.loop.fans]. (please check resource whitelabel-api.md for more details of the api)
+
+    c. after the creation of domain an application should be made on this domain and should be publicly available on this domain by gving nginx settings
+
+    d. GET /v1/wl/domain endpoint to get domain details and correctness of the domain (please check resource whitelabel-api.md for more details of the api)
+
+    e. PATCH /v1/wl/domain/active_template/:domain endpoint to update domain active template (please check resource whitelabel-api.md for more details of the api)
+
+    f. PATCH /v1/wl/domain/:domain endpoint to update domain configurations like logo, banner, website template, settings etc. (please check resource whitelabel-api.md for more details of the api)
+
+    g. GET /v1/indexer/nfts/owner/nfts/owner/:address/:page/:limit to get the details of the nfts owned by the artist. (please check resource indexer-api.md for more details of the api)
+
+    h. GET /v1/templates to get the list of the templates for the artist domain page. (please check resource whitelabel-api.md for more details of the api)
+    
+    i. PATCH /v1/wl/domain/active_template/:domain endpoint to udpate the domain template with the selected website template. (please check resource whitelabel-api.md for more details of the api)
 
 3. Feature Limit In this we will tell the system that how much features he can utilize according to his/her subscription plan.
     a. GET /v1/feature_limits to get the limit of the user (please refer to the resource feature_limits-api.md for more details of the api)
