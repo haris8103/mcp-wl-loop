@@ -62,15 +62,33 @@ function WalletApp() {
     d. GET /v1/wl/domain endpoint to get domain details and correctness of the domain (please check resource whitelabel-api.md for more details of the api)
     e. PATCH /v1/wl/domain/active_template/:domain endpoint to update domain active template (please check resource whitelabel-api.md for more details of the api)
     f. PATCH /v1/wl/domain/:domain endpoint to update domain configurations like logo, banner, website template, settings etc. (please check resource whitelabel-api.md for more details of the api)
+    g. GET /v1/indexer/nfts/owner/nfts/owner/:address/:page/:limit to get the details of the nfts owned by the artist. (please check resource indexer-api.md for more details of the api)
+    h. GET /v1/templates to get the list of the templates for the artist domain page. (please check resource whitelabel-api.md for more details of the api)
+    i. PATCH /v1/wl/domain/active_template/:domain endpoint to udpate the domain template with the selected website template. (please check resource whitelabel-api.md for more details of the api)
+
+
+3. Dashboard may contain the analytics of the fans growth graph, website views graph, fans summary, website view analytics, best selling drops/collections, payout history and monetization.
+
+    a. POST /v1/umami/graph/fansGrowth to get the follower monthlywise data, currnet fans data , followers personal data and percentage month over month. (please check resource umami-api.md for more details of the api)
+    b. POST /v1/umami/graph/collections to get the details of the collection/drop which containst the sales of nfts and overall completion percentage of the collections. (please check resource umami-api.md for more details of the api)
+    c. POST /v1/user/action/account/balance to get the balance of the artist. (please check resource user-api.md for more details of the api)
+    d. POST /v1/user/followerList to get follower details. (please check resource umami-api.md for more details of the api)
+    e. POST /v1/umami/graph/stats/range to get the avg daily views and percentage, metadata, website views graph and pageviews monthly and weekly also week days traffic of the provided range with pervious. (please check resource umami-api.md for more details of the api)
+    f. POST /v1/umami/dashboard to get the monthly percentage change of the traffic on white label, last two months page views and nft count.  (please check resource umami-api.md for more details of the api)
+    g. POST /v1/umami/fans follower details, total fans, current and last month fans. (please check resource umami-api.md for more details of the api)
+    h. POST /v1/umami/customers unique owners of nfts count. (please check resource umami-api.md for more details of the api)
+    i. POST /v1/umami/revenue total revenue. (please check resource umami-api.md for more details of the api)
+    j. GET /v1/fan_funnel/pre_registration/fans/:id/count to get the count of fans who pre registered for the event. (please check resource fan_funnel-api.md for more details of the api)
+    k. POST /v1/user/action/payout/history to get the payout history of the artist. (please check resource user-api.md for more details of the api) 
     
-3. create content blocks for domain
+4. create content blocks for domain
     a. POST /v1/wl/content_blocks/:domainId endpoint to create content blocks which enables user to rebrand his work.(please check resource whitelabel-api.md for more details of the api)
     b. POST /v1/wl/content_blocks endpoint can also be used to create content blocks which enables user to rebrand his work.(please check resource whitelabel-api.md for more details of the api )
     c. GET /v1/wl/content_blocks/:domainId endpoint to get the details of the content blocks on the basis of domainId (please check resource whitelabel-api.md for more details of the api )
     d. PATCH /v1/wl/content_blocks/:id endpoint to update content blocks which enables user to rebrand his work.(please check resource whitelabel-api.md for more details of the api )
     e. PUT /v1/wl/content_blocks/:id/reorder endpoint to reorder content blocks which enables user to rebrand his work.(please check resource whitelabel-api.md for more details of the api)
 
-4. In content blocks there are following types of blocks 
+5. In content blocks there are following types of blocks 
 
     a. albumBlock:
         1. POST /v1/blocks/album_block endpoint to create album block artist will be able to upload the block of images of the artist of his related work (please check resource whitelabel-api.md for more details of the api). To upload files of the tracks please use POST v1/file/upload endpoint first and get file id then send it in the album_block creation endpoint (for more details please visit the resource file-api.md file).
@@ -114,7 +132,7 @@ function WalletApp() {
         4. DELETE /v1/blocks/:id endpoint to delete the content block of the banner block  in the directus(please check resource whitelabel-api.md for more details of the api)
         5. PATCH /v1/blocks/update_status/:id endpoint to update status of banner block (please check resource whitelabel-api.md for more details of the api)
 
-5. Event module is where artist can make there events for upcoming items.
+6. Event module is where artist can make there events for upcoming items.
     1. POST /v1/wl/events endpoint to create an event for upcoming items (please check resource whitelabel-api.md for more details of the api).
     2. PATCH /v1/wl/events/:id endpoint to edit/update an existing event (please check resource whitelabel-api.md for more details of the api).
     3. DELETE /v1/wl/events/:id endpoint to delete an event (please check resource whitelabel-api.md for more details of the api).
@@ -123,13 +141,55 @@ function WalletApp() {
     6. PATCH /v1/wl/events/:eventId/items/:itemId endpoint to edit/update an item for an event (please check resource whitelabel-api.md for more details of the api).
     7. DELETE /v1/wl/events/:eventId/items/:itemId endpoint to delete an item for an event (please check resource whitelabel-api.md for more details of the api).
 
-6. Create Launchpads for nft launch with exclusive content for fans. There will be two types of launchpads paid drops and free drops.
-    1. POST /v1/launchpad/createCollection endpoint to create a newlaunchpad feature for fans it can be paid or free depends on therequests parameters (please read resource launchpad-api.md for moredetails of the api).
-    2. POST /v1/launchpad/editCollection/:id endpoint to edit an existinglaunchpad (please read resource launchpad-api.md for more details ofthe api).
-    3. POST /v1/launchpad/editCollection/update-status/:id to update statusof launchpad (please read resource launchpad-api.md for more details ofthe api).
-    4. GET /v1/launchpad/:id to get details of launchpad (please readresource launchpad-api.md for more details of the api)
+8. News module where artist can create post/feed for all users/community
+    1. POST /v1/user/action/post to create a post for all users/community (please check resource arena-api.md for more details of the api).
+    2. POST /v1/arena/profile/feed endpoint to get post/feed for all users/community (please check resource news-api.md for more details of the api).
+    3. POST /v1/arena/action/like endpoint to like the post/feed (please check resource news-api.md for more details of the api).
+    4. POST /v1/arena/comments endpoint to like the reply/comment on any post/feed (please check resource news-api.md for more details of the api).
+
+7. Create Launchpads/drops for nft launch with exclusive content for fans. There will be two types of launchpads paid drops and free drops.
+    1. POST /v1/launchpad/createCollection endpoint to create a new launchpad/drop feature for fans it can be paid or free depends on therequests parameters (please read resource launchpad-api.md for moredetails of the api).
+    2. POST /v1/launchpad/editCollection/:id endpoint to edit an existing launchpad/drop (please read resource launchpad-api.md for more details ofthe api).
+    3. POST /v1/launchpad/editCollection/update-status/:id to update status of launchpad/drop to live/draft (please read resource launchpad-api.md for more details ofthe api).
+    4. GET /v1/launchpad/:id to get details of launchpad/drop (please readresource launchpad-api.md for more details of the api)
+    5. GET /v1/arena/collections/byId/:id endpoint to get all types of launchpads/drops (please read resource arena-api.md for more details of the api)
+    6. GET /v1/fans/fans_launchpad/insights/:id to get the max supply, sold, total revenue, profit (please read resource arena-api.md for more details of the api)
+    7. GET /v1/fans/fans_launchpad/insights/transactions/:id/:page to get the max supply, sold, total revenue, profit (please read resource arena-api.md for more details of the api)
+    8. GET /v1/arena/collections/nft_owners/:id endpoint to get all nft owners who purchased the nfts (please read resource arena-api.md for more details of the api)
+    9. POST /v1/fans/customers to get the total count of fans, distinct list of fans, page count of customers, nft_data (please read resource arena-api.md for more details of the api)
+    
+
+8. In launchpad following are the drop items we can create:
+
+    a. Music Album Drop
+        1. POST /v1/benefit/album to create/update music album drop (please read resource arena-api.md for more details of the api).
+        2. GET /v1/indexer/nftDetail/:id to get details of music album drop (please read resource arena-api.md for more details of the api).
+        3. DELETE /v1/benefit/delete endpoint to delete benefit/drop (please read resource arena-api.md for more details of the api)
+        4. GET /v1/fans/fans_launchpad/:id endpoint to get details of music album drop (please read resource arena-api.md for more details of the api)
+        
+
+    b. Video Drop
+        1. POST /v1/benefit/video to create/update video drop (please read resource arena-api.md for more details of the api).
+        2. GET /v1/indexer/nftDetail/:id to get details of video drop (please read resource arena-api.md for more details of the api).
+        3. DELETE /v1/benefit/delete endpoint to delete benefit/drop (please read resource arena-api.md for more details of the api)
+        4. GET /v1/fans/fans_launchpad/:id endpoint to get details of video drop (please read resource arena-api.md for more details of the api)
+
+    c. Files Drop
+        1. POST /v1/benefit/files to create/update files drop (please read resource arena-api.md for more details of the api).
+        2. GET /v1/indexer/nftDetail/:id to get details of files drop (please read resource arena-api.md for more details of the api).
+        3. DELETE /v1/benefit/delete endpoint to delete benefit/drop (please read resource arena-api.md for more details of the api)
+        4. GET /v1/fans/fans_launchpad/:id endpoint to get details of files drop (please read resource arena-api.md for more details of the api)
+    
+    d. Gallery Drop
+        1. POST /v1/benefit/gallery to create/update gallery drop (please read resource arena-api.md for more details of the api).
+        2. POST /v1/benefit/gallery/:id endpoint to delete gallery item (please read resource arena-api.md for more details of the api).
+        3. GET /v1/indexer/nftDetail/:id to get details of gallery drop (please read resource arena-api.md for more details of the api).
+        4. DELETE /v1/benefit/delete endpoint to delete benefit/drop (please read resource arena-api.md for more details of the api)
+        5. GET /v1/fans/fans_launchpad/:id endpoint to get details of gallery drop (please read resource arena-api.md for more details of the api)
 
 
+    
+        
 ## Fan Page (Arena)
 
     Arena module will provide whitelable for the artist to present his music videos or anything there, sofan will come and get these things from there. It will be a separate application from the studio and hosted on the domain which is set by the artist in his POST /v1/wl/domain api. The application will also provide NFT to purchase it by fans and get exclusive contents from the artists which will be segregated by paid and free collections
