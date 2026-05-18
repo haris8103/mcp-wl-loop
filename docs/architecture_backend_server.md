@@ -54,8 +54,13 @@ function WalletApp() {
 
 ### Api FLows
 
+#### Signup
+
 1. signup/signin with cloud wallet sdk
-2. creating domain for artist arena where fan will be able to view music, galleries, videos and other 
+
+#### Onboarding flow (domain setup, Website Design Customization, Pay platform fee (subscription))
+
+3. creating domain for artist arena where fan will be able to view music, galleries, videos and other 
 content. Also need to check the domain is available or not. following are the steps
 
     a. GET /v1/wl/domain/check endpoint to check availability and correctness of the domain (please check 
@@ -86,7 +91,7 @@ content. Also need to check the domain is available or not. following are the st
     i. PATCH /v1/wl/domain/active_template/:domain endpoint to udpate the domain template with the selected
      website template. (please check resource whitelabel-api.md for more details of the api)
 
-3. Plan (subscription module Free/trial/pro)
+4. Plan (subscription module Free/trial/pro)
     
     a. POST /v1/user/billing/upgrade to upgrade to the desired plan which will take to the stripe payment 
     gateway to complete the payment.
@@ -96,7 +101,7 @@ content. Also need to check the domain is available or not. following are the st
     c. GET /v1/user/billing/plan to get user's current plan.
     
 
-4. Feature Limit In this we will tell the system that how much features he can utilize according to his/her
+5. Feature Limit In this we will tell the system that how much features he can utilize according to his/her
  subscription plan.
 
     a. GET /v1/feature_limits to get the limit of the user (please refer to the resource feature_limits-api.
@@ -110,7 +115,9 @@ content. Also need to check the domain is available or not. following are the st
         Forms - 1 Maximum
         Fans - Data for 25 Fans
 
-5. Dashboard may contain the analytics of the fans growth graph, website views graph, fans summary, website 
+#### Main Studio
+
+6. Dashboard may contain the analytics of the fans growth graph, website views graph, fans summary, website 
 view analytics, best selling drops/collections, payout history and monetization.
 
     a. POST /v1/umami/graph/fansGrowth to get the follower monthlywise data, currnet fans data , followers 
@@ -149,7 +156,7 @@ view analytics, best selling drops/collections, payout history and monetization.
     k. POST /v1/user/action/payout/history to get the payout history of the artist. (please check resource 
     user-api.md for more details of the api) 
     
-6. create content blocks for domain
+7. create content blocks for domain
 
     a. POST /v1/wl/content_blocks/:domainId endpoint to create content blocks which enables user to rebrand
      his work.(please check resource whitelabel-api.md for more details of the api)
@@ -166,7 +173,7 @@ view analytics, best selling drops/collections, payout history and monetization.
     e. PUT /v1/wl/content_blocks/:id/reorder endpoint to reorder content blocks which enables user to 
     rebrand his work.(please check resource whitelabel-api.md for more details of the api)
 
-7. In content blocks there are following types of blocks 
+8. In content blocks there are following types of blocks 
 
     a. albumBlock:
     
@@ -288,7 +295,7 @@ view analytics, best selling drops/collections, payout history and monetization.
       5. PATCH /v1/blocks/update_status/:id endpoint to update status of banner block (please check 
         resource whitelabel-api.md for more details of the api)
 
-8. Event module is where artist can make there events for upcoming items.
+9. Event module is where artist can make there events for upcoming items.
 
     a. POST /v1/wl/events endpoint to create an event for upcoming items (please check resource 
     whitelabel-api.md for more details of the api).
@@ -311,7 +318,7 @@ view analytics, best selling drops/collections, payout history and monetization.
     g. DELETE /v1/wl/events/:eventId/items/:itemId endpoint to delete an item for an event (please check 
     resource whitelabel-api.md for more details of the api).
 
-9. News module where artist can create post/feed for all users/community
+10. News module where artist can create post/feed for all users/community
 
     a. POST /v1/user/action/post to create a post for all users/community (please check resource arena-api.
     md for more details of the api).
@@ -325,7 +332,7 @@ view analytics, best selling drops/collections, payout history and monetization.
     d. POST /v1/arena/comments endpoint to like the reply/comment on any post/feed (please check resource 
     news-api.md for more details of the api).
 
-10. Create Launchpads/drops for nft launch with exclusive content for fans. There will be two types of 
+11. Create Launchpads/drops for nft launch with exclusive content for fans. There will be two types of 
 launchpads paid drops and free drops.
 
     a. POST /v1/launchpad/createCollection endpoint to create a new launchpad/drop feature for fans it can
@@ -360,7 +367,7 @@ launchpads paid drops and free drops.
     revenue, count of fans who purchased NFT (please check resource arena-api.md for more details of the 
     api)
 
-11. In launchpad following are the drop items we can create:
+12. In launchpad following are the drop items we can create:
 
     a. Music Album Drop:
 
@@ -422,7 +429,7 @@ launchpads paid drops and free drops.
       5. GET /v1/fans/fans_launchpad/:id endpoint to get details of gallery drop (please read resource 
         arena-api.md for more details of the api)
 
-12. In studio fan signup form feature will be available for incoming events for the registeration users in
+13. In studio fan signup form feature will be available for incoming events for the registeration users in
  that event.
 
     a. POST /v1/fan_funnel/pre_registeration endpoint to create fan signup forms for an event (please read 
@@ -446,7 +453,7 @@ launchpads paid drops and free drops.
     g. POST /v1/fan_funnel/pre_registeration/artist/fans endpoint to get details of all fan signup forms 
     submissions for an event (please read resource arena-api.md for more details of the api).
 
-13. Support module for the artist to provide support technical support.
+14. Support module for the artist to provide support technical support.
 
     a. POST /v1/user/action/sendFormEmail to provide support to the artist
 
