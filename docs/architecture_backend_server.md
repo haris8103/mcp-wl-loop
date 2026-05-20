@@ -54,9 +54,10 @@ function WalletApp() {
 
 ### Api FLows
 
-#### Signup
+#### Signup/Signin
 
 1. signup/signin with cloud wallet sdk
+2. POST /v1/user/userInfo to get details of the logged in user (please read resource user-api.md for more details of the api)
 
 #### Onboarding flow (domain setup, Website Design Customization, Pay platform fee (subscription))
 
@@ -462,4 +463,37 @@ launchpads paid drops and free drops.
 
 ## Fan Page (Arena)
 
-   Arena module will provide whitelable for the artist to present his music videos or anything there, sofan will come and get these things from there. It will be a separate application from the studio and hosted on the domain which is set by the artist in his POST /v1/wl/domain api. The application will also provide NFT to purchase it by fans and get exclusive contents from the artists which will be segregated by paid and free collections
+  Fan page is the place where  the fans will be able to view the content of the artist. It will be a separate application from the studio and hosted on the domain which is set by the artist in his POST /v1/wl/domain api. The application will also provide NFT to purchase it by fans and get exclusive contents from the artists which will be segregated by paid and free collections. Also there fans can view posts/announcements of the artist made in the studio, fans can like them or can make comment on those posts/announcements. In fan page there will be a section for music library where user can view music drops. 
+
+  ### API's for fan page
+  
+  #### Signup/Signin
+
+  1. signup/signin with cloud wallet sdk on the home page (Note home page will be visible to every one who visit the site - the fan doesn't need to be registered or logged in. This is an open site)
+
+  #### Home page
+  
+  1. GET /v1/wl/domain to get domain details
+  2. POST /v1/user/userInfo (if user logged in/just signup) to get details of the logged in user (please read resource user-api.md for more details of the api)
+  3. https://api-wl.loop.fans/api/items/domains to get the domain details of the artist.
+  4. GET https://api-wl.loop.fans/api/items/content_blocks to get the content blocks of the artist.
+  5. GET https://api-wl.loop.fans/api/items/fan_funnel to get the fan funnel details of the artist where a fan can register for upcoming events by filling the form.
+  6. GET /v1/fan_funnel/pre_registration/:id to get the fan signup form details of a particular fan_funnel.
+  7. POST /v1/fan_funnel/:id/register/check to check if the fan is already registered for that fan_funnel item.
+  8. POST /v1/fan_funnel/:id/register to register for that fan_funnel item.
+  9. GET https://api-wl.loop.fans/api/items/content_blocks to get the content block details of the atrtist.
+  10. GET https://api-wl.loop.fans/api/items/fans_launchpad to get the details of the artist paid drops. 
+  11. GET https://api-wl.loop.fans/api/items/fans_launchpad_free to get the details of the artist free drops.
+  12. GET /v1/fans/fans_launchpad/:id?isId=true to get the details of the artist paid or free drop by providing if fan select particular drop.
+  13. POST /v1/user/user-wallets to get the details of the logged in users wallet address.
+  14. POST /v1/fans/nft/owner to check the user is owner of the nft.
+  15. POST /v1/minter/mint to mint the free drop nft
+  16. POST /v1/payment/intent to create payment intent for paid drop for payment of the nft to get the exclusive content of the artist. Stripe is used for payment.
+
+
+  #### Post/feed/news
+
+  1. POST /v1/arena/profile/feed  to get the feed/announcements of the artist. (Please read resource arena-api.md for more details of the api)
+  2. POST /v1/arena/action/like to like/unlike the post/announcement. (Please read resource arena-api.md for more details of the api)
+  3. POST /v1/arena/action/comment to comment on the post/announcement. (Please read resource arena-api.md for more details of the api)
+  4. POST /v1/arena/comments to get the comments/replies on the post. (Please read resource arena-api.md for more details of the api)
