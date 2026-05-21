@@ -20,10 +20,24 @@ POST /v1/minter/mint
 Mints a free NFT from a launchpad to a user's wallet. Requires authentication.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `launchpadId` | `string` | Yes | Launchpad ID to mint from |
+```json
+{
+  "type": "string",
+  "query": {
+    "filter": "{}",
+    "limit": 10,
+    "page": 1
+  },
+  "cookie": "string",
+  "form": {
+    "name": "string",
+    "description": "string",
+    "image": "file_binary"
+  },
+  "query.collection_addr": "string",
+  "query.starknet_address": "string"
+}
+```
 
 **Flow:**
 1. Validates user authentication
@@ -58,134 +72,62 @@ Mints a free NFT from a launchpad to a user's wallet. Requires authentication.
 
 ---
 
-### Mint NFT with Payment
+### Claim NFT
 
-```
-POST /v1/minter/mint/pay
+```http
+POST /v1/minter/claimNft
 ```
 
-Mints an NFT after successful payment. Requires authentication.
+Claims an NFT (e.g., from an event or giveaway). Requires authentication.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `launchpadId` | `string` | Yes | Launchpad ID |
-| `paymentId` | `string` | Yes | Payment history record ID |
-
----
-
-### Claim by Code
-
-```
-POST /v1/minter/claim
-```
-
-Claims an NFT using a claim code. Requires authentication.
-
-**Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `claim_code` | `string` | Yes | Claim code |
-
-**Flow:**
-1. Validates claim code exists and is unused
-2. Checks code hasn't expired
-3. Mints NFT to user's wallet
-4. Marks code as used
-5. Tracks analytics
-
----
-
-### Validate Claim Code
-
-```
-POST /v1/minter/claim/validate
-```
-
-Validates a claim code without using it.
-
-**Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `claim_code` | `string` | Yes | Claim code to validate |
-
-**Response:**
 ```json
 {
-  "valid": true,
-  "collection": {
-    "name": "string",
-    "description": "string"
+  "code": "string",
+  "query": {
+    "address": "string",
+    "id": 1
   }
 }
 ```
 
 ---
 
+### Get Redeemables
+
+```http
+GET /v1/minter/redeemables/:nft_id
+```
+
+Fetches redeemable items associated with a specific NFT.
+
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `nft_id` | `string` | ID of the NFT |
+
+**Query Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `cookie` | `string` | Yes | Auth cookie |
+| `address` | `string` | Yes | Wallet address of the owner |
+
+---
+
 ### Redeem NFT
 
-```
+```http
 POST /v1/minter/redeem
 ```
 
 Redeems a redeemable NFT (physical/digital goods). Requires authentication and ownership of the NFT.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `nft_id` | `string` | Yes | NFT ID to redeem |
-| `shipping_address` | `object` | No | Shipping address for physical goods |
-
----
-
-### Get Mint Status
-
-```
-GET /v1/minter/status/:launchpadId
-```
-
-Gets the current mint status (supply, minted count, availability) for a launchpad.
-
-**Path Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `launchpadId` | `string` | Launchpad ID |
-
-**Response:**
 ```json
 {
-  "total_supply": "number",
-  "minted": "number",
-  "available": "number",
-  "is_active": "boolean"
-}
-```
-
----
-
-### Check User Mint Eligibility
-
-```
-POST /v1/minter/check
-```
-
-Checks if a user has already minted from a launchpad, and how many mints they have left.
-
-**Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `launchpadId` | `string` | Yes | Launchpad ID |
-
-**Response:**
-```json
-{
-  "has_minted": "boolean",
-  "mint_count": "number",
-  "mint_limit": "number",
-  "can_mint": "boolean"
+  "access_token": "string",
+  "qr_hash": "string",
+  "collection_addr": "string",
+  "starknet_address": "string"
 }
 ```

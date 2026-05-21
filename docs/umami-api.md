@@ -33,7 +33,11 @@ Fetches website stats and pageviews for a given time range.
 {
   "success": true,
   "websiteView": { "pageviews": [], "sessions": [] },
-  "data": { "pageviews": {}, "visitors": {}, "visits": {} },
+  "data": { 
+    "pageviews": { "value": 0, "change": 0 }, 
+    "visitors": { "value": 0, "change": 0 }, 
+    "visits": { "value": 0, "change": 0 } 
+  },
   "metadata": {
     "websiteId": "string",
     "range": "string",
@@ -54,14 +58,26 @@ POST /v1/umami/graph/stats/range
 Fetches detailed graph data for dashboard with pageview trends, daily averages, and period comparison.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `userInfo` | `object` | Yes | User info with `id` and `profile_id` |
-| `range` | `string` | Yes | Time range: `1h`, `24h`, `7d`, `30d`, `90d` |
-| `host` | `string` | No | Domain (auto-fetched from user domain if omitted) |
-| `unit` | `string` | No | Time unit (default: `hour`) |
-| `timezone` | `string` | No | Timezone (default: `Asia/Karachi`) |
-| `device` | `string` | No | Device filter (default: `all`) |
+```json
+{
+  "userInfo": {
+    "id": "uuid",
+    "role": "artist",
+    "profile_id": "uuid",
+    "avatar": "file_uuid",
+    "first_name": "string",
+    "display_name": "string",
+    "username": "string",
+    "onboard": true,
+    "wallet_address": "string"
+  },
+  "range": "string",
+  "host": "string",
+  "unit": "string",
+  "timezone": "string",
+  "device": "string"
+}
+```
 
 **Response:**
 ```json
@@ -72,8 +88,22 @@ Fetches detailed graph data for dashboard with pageview trends, daily averages, 
   },
   "success": true,
   "viewsGraphs": [{ "x": "date_string", "y": "number" }],
-  "pageviewsMonthly": {},
-  "pageviewsWeekly": {},
+  "pageviewsMonthly": {
+    "pageviews": [
+      { "x": "2023-01-01", "y": 100 }
+    ],
+    "sessions": [
+      { "x": "2023-01-01", "y": 50 }
+    ]
+  },
+  "pageviewsWeekly": {
+    "pageviews": [
+      { "x": "2023-01-01", "y": 100 }
+    ],
+    "sessions": [
+      { "x": "2023-01-01", "y": 50 }
+    ]
+  },
   "averageDailyViews": "string",
   "metadata": { "range": "string", "host": "string" }
 }
@@ -96,10 +126,22 @@ POST /v1/umami/graph/fansGrowth
 Fetches fan/follower growth data over the last 6 months with month-over-month change.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `userInfo` | `object` | Yes | User info with `id` |
-| `collectionFilter` | `string` | No | Optional filter |
+```json
+{
+  "userInfo": {
+    "id": "uuid",
+    "role": "artist",
+    "profile_id": "uuid",
+    "avatar": "file_uuid",
+    "first_name": "string",
+    "display_name": "string",
+    "username": "string",
+    "onboard": true,
+    "wallet_address": "string"
+  },
+  "collectionFilter": "string"
+}
+```
 
 **Response:**
 ```json
@@ -126,10 +168,22 @@ POST /v1/umami/graph/collections
 Fetches collection performance data including NFT supply completion percentages.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `userInfo` | `object` | Yes | User info with `id` |
-| `collectionFilter` | `string` | No | Sort: `all`, `top`, `recent` (default: sorted by completion %) |
+```json
+{
+  "userInfo": {
+    "id": "uuid",
+    "role": "artist",
+    "profile_id": "uuid",
+    "avatar": "file_uuid",
+    "first_name": "string",
+    "display_name": "string",
+    "username": "string",
+    "onboard": true,
+    "wallet_address": "string"
+  },
+  "collectionFilter": "string"
+}
+```
 
 **Response:**
 ```json
@@ -161,16 +215,35 @@ POST /v1/umami/dashboard
 Fetches dashboard summary — total NFTs, monthly page view percentage change, and current month stats.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `userInfo` | `object` | Yes | User info with `id` |
-| `host` | `string` | No | Domain (auto-fetched if omitted) |
+```json
+{
+  "userInfo": {
+    "id": "uuid",
+    "role": "artist",
+    "profile_id": "uuid",
+    "avatar": "file_uuid",
+    "first_name": "string",
+    "display_name": "string",
+    "username": "string",
+    "onboard": true,
+    "wallet_address": "string"
+  },
+  "host": "string"
+}
+```
 
 **Response:**
 ```json
 {
   "monthlyPercentChange": "number",
-  "pageviewsTwoMonth": {},
+  "pageviewsTwoMonth": {
+    "pageviews": [
+      { "x": "2023-01-01", "y": 100 }
+    ],
+    "sessions": [
+      { "x": "2023-01-01", "y": 50 }
+    ]
+  },
   "nft_count": "number"
 }
 ```
@@ -186,9 +259,21 @@ POST /v1/umami/fans
 Fetches detailed follower list with this-month and last-month fan counts.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `userInfo` | `object` | Yes | User info with `id` |
+```json
+{
+  "userInfo": {
+    "id": "uuid",
+    "role": "artist",
+    "profile_id": "uuid",
+    "avatar": "file_uuid",
+    "first_name": "string",
+    "display_name": "string",
+    "username": "string",
+    "onboard": true,
+    "wallet_address": "string"
+  }
+}
+```
 
 **Response:**
 ```json
@@ -213,9 +298,21 @@ POST /v1/umami/customers
 Fetches the count of unique NFT owners across all of the artist's collections.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `userInfo` | `object` | Yes | User info with `id` |
+```json
+{
+  "userInfo": {
+    "id": "uuid",
+    "role": "artist",
+    "profile_id": "uuid",
+    "avatar": "file_uuid",
+    "first_name": "string",
+    "display_name": "string",
+    "username": "string",
+    "onboard": true,
+    "wallet_address": "string"
+  }
+}
+```
 
 **Response:**
 ```json
@@ -235,9 +332,21 @@ POST /v1/umami/revenue
 Fetches total revenue from approved payments for the artist's launchpads.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `userInfo` | `object` | Yes | User info with `id` |
+```json
+{
+  "userInfo": {
+    "id": "uuid",
+    "role": "artist",
+    "profile_id": "uuid",
+    "avatar": "file_uuid",
+    "first_name": "string",
+    "display_name": "string",
+    "username": "string",
+    "onboard": true,
+    "wallet_address": "string"
+  }
+}
+```
 
 **Response:**
 ```json

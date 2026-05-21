@@ -54,27 +54,31 @@ POST /v1/launchpad/createCollection
 Creates a new launchpad with attached fan collection. Requires authentication. Subject to `mustBeAuthenticated` and `planLimitsMiddleware`.
 
 **Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.collection` | `string` (JSON) | Yes | Collection data (JSON string) |
-| `files.artwork` | `File` | No | Collection artwork image |
+```json
+{
+  "fields.cookie": "string",
+  "fields.collection": "string",
+  "files.artwork": "file_binary"
+}
+```
 
 **Collection JSON fields:**
-| Field | Type | Description |
-|-------|------|-------------|
-| `collection_name` | `string` | Name of the collection |
-| `status` | `string` | Publication status (`published`, `draft`) |
-| `collection_description` | `string` | Description |
-| `collection_quantity` | `number` | Max supply |
-| `collection_price` | `string` | Mint price |
-| `collection_min_price` | `string` | Minimum price |
-| `collection_start_date` | `string` | Start date |
-| `collection_start_time` | `string` | Start time |
-| `collection_end_date` | `string` | End date |
-| `collection_end_time` | `string` | End time |
-| `collection_type` | `string` | Type (`collectible`, `vote`, `support`) |
-| `chain` | `string` | Blockchain (`starknet` or other) |
+```json
+{
+  "collection_name": "string",
+  "status": "string",
+  "collection_description": "string",
+  "collection_quantity": 1000,
+  "collection_price": "string",
+  "collection_min_price": "string",
+  "collection_start_date": "string",
+  "collection_start_time": "string",
+  "collection_end_date": "string",
+  "collection_end_time": "string",
+  "collection_type": "string",
+  "chain": "string"
+}
+```
 
 **Side Effects:**
 - Uploads artwork to cloud storage
@@ -111,30 +115,12 @@ POST /v1/launchpad/editCollection/update-status/:id
 Updates just the status (published/draft) of a launchpad and its collection. Requires authentication and ownership.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.status` | `string` | Yes | New status |
-
----
-
-### Create Vote Collection (WMA)
-
+```json
+{
+  "cookie": "string",
+  "status": "string"
+}
 ```
-POST /v1/launchpad/createVoteCollection
-```
-
-Creates a vote-type launchpad for World Music Awards competitions. Requires authentication.
-
-**Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.divisionId` | `string` | Yes | Division ID |
-| `fields.genreId` | `string` | Yes | Genre ID |
-| `fields.status` | `string` | No | Status (default: `draft`) |
-| `files.image` | `File` | Yes | Artwork image |
-| `files.song` | `File` | Yes | Competition song |
 
 **Validation:** Uses `voteCollectionSchema` (Joi)
 
@@ -155,15 +141,17 @@ POST /v1/launchpad/editVoteCollection
 Updates a vote collection (image, song, genre, division). Requires authentication and ownership.
 
 **Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.launchpadId` | `string` | Yes | Launchpad ID |
-| `fields.divisionId` | `string` | Yes | Division ID |
-| `fields.genreId` | `string` | Yes | Genre ID |
-| `fields.status` | `string` | Yes | Status |
-| `files.image` | `File` | No | Updated artwork |
-| `files.song` | `File` | No | Updated song |
+```json
+{
+  "fields.cookie": "string",
+  "fields.launchpadId": "string",
+  "fields.divisionId": "string",
+  "fields.genreId": "string",
+  "fields.status": "string",
+  "files.image": "file_binary",
+  "files.song": "file_binary"
+}
+```
 
 ---
 
@@ -176,11 +164,13 @@ POST /v1/launchpad/createSupportCollection
 Creates a support-type collection ("Good Vibes"). Requires authentication. Each user can only have one support collection.
 
 **Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `files.nft_image_1` | `File` | Yes | Primary NFT image |
-| `files.nft_image_2` | `File` | No | Secondary NFT image |
-| `files.nft_image_3` | `File` | No | Tertiary NFT image |
+```json
+{
+  "fields.cookie": "string",
+  "files.nft_image_1": "file_binary",
+  "files.nft_image_2": "file_binary",
+  "files.nft_image_3": "file_binary"
+}
+```
 
 **Validation:** Uses `supportCollectionSchema` (Joi)

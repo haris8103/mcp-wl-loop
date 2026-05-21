@@ -74,9 +74,11 @@ PATCH /v1/fan_funnel
 Updates the label of the fan funnel. Requires authentication.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `label` | `string` | Yes | Updated label |
+```json
+{
+  "label": "string"
+}
+```
 
 ---
 
@@ -93,14 +95,16 @@ POST /v1/fan_funnel/pre_registration
 Creates a pre-registration form item. Requires authentication. Subject to `mustBeAuthenticated` and `planLimitsMiddleware`.
 
 **Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.name` | `string` | No | Form name |
-| `fields.description` | `string` | No | Description |
-| `fields.required_tags` | `string` | No | Required tags |
-| `fields.release_date` | `string` | No | Release date (ISO format) |
-| `files.cover_image` | `File` | No | Cover image |
+```json
+{
+  "fields.cookie": "string",
+  "fields.name": "string",
+  "fields.description": "string",
+  "fields.required_tags": "string",
+  "fields.release_date": "string",
+  "files.cover_image": "file_binary"
+}
+```
 
 ---
 
@@ -154,9 +158,11 @@ POST /v1/fan_funnel/pre_registration/:fan_funnel_id/:id/default
 Sets an item as the default pre-registration form, un-setting all others. Requires authentication.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `is_default` | `boolean` | Yes | Whether this is the default form |
+```json
+{
+  "is_default": true
+}
+```
 
 ---
 
@@ -169,9 +175,11 @@ POST /v1/fan_funnel/pre_registration/:fan_funnel_id/:id/status
 Updates the status of a pre-registration item. Only works on default items. Requires authentication.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.status` | `string` | Yes | New status value |
+```json
+{
+  "fields.status": "string"
+}
+```
 
 ---
 
@@ -198,12 +206,14 @@ POST /v1/fan_funnel/:id/register
 Submits a fan registration to a pre-registration form. Validates the form is open and not expired.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.name` | `string` | No | Fan name |
-| `fields.email` | `string` | No | Fan email |
-| `fields.country` | `string` | No | Country |
-| `fields.birthday` | `string` | No | Birthday |
+```json
+{
+  "fields.name": "string",
+  "fields.email": "string",
+  "fields.country": "string",
+  "fields.birthday": "string"
+}
+```
 
 ---
 
@@ -216,11 +226,16 @@ POST /v1/fan_funnel/:id/register/check
 Checks if an email has already registered for a pre-registration.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.email` | `string` | Yes | Email to check |
+```json
+{
+  "fields.email": "string"
+}
+```
 
-**Response:** `true` if already registered, `404` if not found.
+**Response:**
+```json
+true
+```
 
 ---
 
@@ -278,17 +293,19 @@ POST /v1/fan_funnel/pre_release_collection
 Creates a pre-release collection (music, videos, files) with associated media files. Requires authentication.
 
 **Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.type` | `string` | Yes | Content type (e.g., "music", "video") |
-| `fields.name` | `string` | No | Collection name |
-| `fields.quantity` | `number` | No | Quantity available |
-| `fields.description` | `string` | No | Description |
-| `fields.album_name` | `string` | No | Album name |
-| `fields.required_tags` | `string` | No | Required tags |
-| `files.cover_image` | `File` | No | Cover image |
-| `files.files` | `File[]` | No | Content files |
+```json
+{
+  "fields.cookie": "string",
+  "fields.type": "string",
+  "fields.name": "string",
+  "fields.quantity": 0,
+  "fields.description": "string",
+  "fields.album_name": "string",
+  "fields.required_tags": "string",
+  "files.cover_image": "file_binary",
+  "files.files": []
+}
+```
 
 ---
 
@@ -311,11 +328,13 @@ PATCH /v1/fan_funnel/pre_release_collection/:id
 Renames a file in a pre-release collection. Requires authentication and ownership.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.file_name` | `string` | Yes | New file name |
-| `fields.fan_funnel_id` | `string` | Yes | Fan funnel ID |
+```json
+{
+  "fields.cookie": "string",
+  "fields.file_name": "string",
+  "fields.fan_funnel_id": "string"
+}
+```
 
 ---
 

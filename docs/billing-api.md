@@ -1,118 +1,212 @@
 # Billing API
 
-> **Source:** `views/billing/index.mjs`  
-> **Base URL:** `/v1/billing`
+> **Source:** `views/billing/`  
+> **Modules:** `index.mjs`, `webhook.mjs`, `user/user_billing.mjs`  
+> **Base URLs:** `/v1`, `/v1/billing/webhook`, `/v1/user/billing`
 
 ## Overview
 
-The Billing API manages subscription plans including creation, updating, retrieval, and cancellation. It integrates with Stripe for payment processing and uses middleware for authentication and plan limits.
+The Billing API manages subscription plans including creation, upgrading, downgrading, and retrieval of user plans. It integrates with Stripe for payment processing and Stripe Checkout for subscription flows, utilizing webhooks to sync states back to Directus.
 
 ---
 
 ## Endpoints
 
-### Get User Billing Info
+### Get All Tiers & Subscriptions
 
-```
-GET /v1/billing
+```http
+GET /v1/tiers-n-subscriptions
 ```
 
-Fetches the current user's billing/subscription information. Requires authentication via `mustBeAuthenticated` middleware.
+Fetches all available subscription tiers and their corresponding active plans.
+
+**Response:**
+```json
+[
+  {
+    "id": 1,
+    "name": "string",
+    "features": ["string"],
+    "description": "string",
+    "price_cents": 1000,
+    "billing_interval": "string"
+  }
+]
+```
+
+---
+
+### Get User Current Plan
+
+```http
+GET /v1/user/billing/plan
+```
+
+Fetches the currently authenticated user's active or trialing subscription plan.
 
 **Headers:**
 | Header | Type | Required | Description |
 |--------|------|----------|-------------|
 | `user_cookie` | `string` | Yes | Auth cookie |
 
-**Response:**
+**Response (200 OK):**
 ```json
 {
+  "id": "sub_123",
+  "status": "active",
+  "current_period_start": "2023-01-01T00:00:00Z",
+  "current_period_end": "2023-02-01T00:00:00Z",
   "plan": {
-    "id": "string",
-    "plan_name": "string",
-    "status": "string",
-    "stripe_subscription_id": "string",
-    "plan_features": {}
+    "id": 1,
+    "name": "Pro Plan"
   }
 }
 ```
 
 ---
 
-### Create Subscription
+### Upgrade/Start Subscription
 
-```
-POST /v1/billing/create
+```http
+POST /v1/user/billing/upgrade
 ```
 
-Creates a new Stripe subscription for the user. Requires authentication.
+Initiates a Stripe Checkout session to upgrade or start a new subscription plan.
+
+**Headers:**
+| Header | Type | Required | Description |
+|--------|------|----------|-------------|
+| `user_cookie` | `string` | Yes | Auth cookie |
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `plan_id` | `string` | Yes | Plan ID to subscribe to |
-| `payment_method_id` | `string` | Yes | Stripe payment method ID |
+```json
+{
+  "planId": "string"
+}
+```
 
-**Side Effects:**
-- Creates Stripe customer and subscription
-- Records subscription in Directus
-- Sends Mixpanel event
+**Logic:**
+- Prevents upgrading to specific plans based on onboarding status.
+- Automatically handles downgrading to the free plan (ID: "3") without Stripe checkout if requested.
+- Creates or retrieves the associated Stripe Customer.
+- Generates a Stripe Checkout Session ID and Redirect URL.
+
+**Response (200 OK):**
+```json
+{
+  "sessionId": "cs_test_...",
+  "redirectUrl": "https://checkout.stripe.com/..."
+}
+```
 
 ---
 
-### Update Subscription
+### Upgrade Success Callback
 
+```http
+GET /v1/user/billing/success?session_id=<id>
 ```
-POST /v1/billing/update
+
+Validates the successful completion of a Stripe Checkout session.
+
+**Query Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `session_id` | `string` | Yes | The Checkout Session ID from Stripe |
+
+**Response (200 OK):**
+```json
+{
+  "message": "Payment successful",
+  "session_id": "cs_test_123"
+}
 ```
-
-Updates an existing subscription (e.g., change plan). Requires authentication.
-
-**Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `new_plan_id` | `string` | Yes | New plan ID |
 
 ---
 
-### Cancel Subscription
+### Upgrade Cancel Callback
 
+```http
+GET /v1/user/billing/cancel
 ```
-POST /v1/billing/cancel
+
+Callback endpoint if a user cancels the Stripe Checkout flow.
+
+**Response (200 OK):**
+```json
+{
+  "message": "Payment cancelled",
+  "redirect_url": "https://frontend.url"
+}
 ```
-
-Cancels the user's active subscription. Requires authentication.
-
-**Side Effects:**
-- Cancels Stripe subscription
-- Updates subscription status in Directus
-- Sends Mixpanel event
 
 ---
 
-### Get Available Plans
+### Get Subscription Details
 
+```http
+GET /v1/user/billing/subscription/details
 ```
-GET /v1/billing/plans
+
+Fetches deep details of the user's active subscription directly from Stripe in combination with Directus data.
+
+**Headers:**
+| Header | Type | Required | Description |
+|--------|------|----------|-------------|
+| `user_cookie` | `string` | Yes | Auth cookie |
+
+**Response (200 OK):**
+```json
+{
+  "id": "sub_123",
+  "stripe_details": {
+    "status": "active",
+    "items": [],
+    "current_period_start": 1234567890,
+    "current_period_end": 1234567890
+  }
+}
 ```
 
-Fetches all available subscription plans.
+---
 
-**Response:** Array of plan objects with features and pricing.
+### Get Available Plans (User Specific)
+
+```http
+GET /v1/user/billing/plans
+```
+
+Fetches all subscription tiers and plans including provider price configurations (e.g., Stripe Price IDs).
+
+**Response (200 OK):**
+```json
+[
+  {
+    "id": 1,
+    "name": "Pro Tier"
+  }
+]
+```
 
 ---
 
 ### Stripe Webhook
 
-```
+```http
 POST /v1/billing/webhook
 ```
 
-Handles Stripe webhook events for subscription lifecycle.
+Handles asynchronous Stripe events to keep the database synchronized with Stripe's state.
 
-**Events handled:**
-- `customer.subscription.created`
-- `customer.subscription.updated`
-- `customer.subscription.deleted`
-- `invoice.payment_succeeded`
-- `invoice.payment_failed`
+**Events Handled:**
+- `checkout.session.completed`: Creates the subscription and associates the customer.
+- `customer.subscription.created`: Syncs a newly created subscription.
+- `customer.subscription.updated`: Syncs plan changes, pauses, and cancellations.
+- `customer.subscription.deleted`: Marks the subscription as cancelled.
+- `invoice.payment_succeeded`: Updates period start/end times upon successful renewal.
+- `invoice.payment_failed`: Handles failed payments (past due states).
+
+**Logic:**
+- Automatically links Stripe customers to Directus `billing_customers`.
+- Logs subscription state transitions in `subscription_status_history`.
+- Fires Posthog tracking events (`artist_subscription_started`, `artist_subscription_cancelled`, `artist_subscription_payment_failed`).

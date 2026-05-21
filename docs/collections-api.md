@@ -1,216 +1,170 @@
 # Collections API
 
 > **Source:** `views/collections/index.mjs`  
-> **Base URL:** `/v1/collections`
+> **Base URL:** `/v1`
 
 ## Overview
 
-The Collections API manages fan collections — creating, updating, deleting collections, and managing associated media (albums, videos, files, songs). It handles content attached to NFT collections.
+The Collections API manages fetching NFT collections, querying their statistics, checking launchpad expirations, and retrieving collections specific to a creator. It utilizes Directus via GraphQL and includes caching to optimize frequent lookups.
 
 ---
 
 ## Endpoints
 
-### Get Collections for User
+### Check Launchpad Expiration
 
-```
-GET /v1/collections
-```
-
-Fetches all collections belonging to the authenticated user. Requires authentication.
-
-**Headers:**
-| Header | Type | Required | Description |
-|--------|------|----------|-------------|
-| `user_cookie` | `string` | Yes | Auth cookie |
-
-**Response:** Array of collection objects with attached media.
-
----
-
-### Get Collection by ID
-
-```
-GET /v1/collections/:id
+```http
+GET /v1/collection/launchpad_exp/:platform/:address
 ```
 
-Fetches a single collection by its ID with full details including albums, videos, files, gallery, and song.
+Fetches the expiration/end date and time for a specific launchpad associated with an NFT address.
 
 **Path Parameters:**
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `id` | `string` | Collection ID |
+| `platform` | `string` | The platform type (`fans` or other) |
+| `address` | `string` | The NFT contract address |
+
+**Response (200 OK):**
+```json
+{
+  "endDate": "2026-12-31",
+  "endTime": "23:59:59"
+}
+```
 
 ---
 
-### Create Collection Album
+### Get Collection By URL
 
-```
-POST /v1/collections/album/create
-```
-
-Creates an album (music tracks) attached to a collection. Requires authentication and ownership.
-
-**Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.name` | `string` | Yes | Album name |
-| `fields.collection_id` | `string` | Yes | Parent collection ID |
-| `fields.genre` | `string` | No | Genre ID |
-| `files.tracks` | `File[]` | Yes | Audio track files |
-
----
-
-### Update Collection Album
-
-```
-POST /v1/collections/album/update/:id
+```http
+GET /v1/collectionByUrl/:address
 ```
 
-Updates an album name, genre, or adds new tracks. Requires authentication and ownership.
+Fetches basic collection information (such as the contract address) using the collection's URL slug. This endpoint utilizes caching.
 
 **Path Parameters:**
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `id` | `string` | Album ID |
+| `address` | `string` | The URL slug of the collection |
 
-**Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.name` | `string` | No | Updated name |
-| `fields.genre` | `string` | No | Updated genre ID |
-| `files.tracks` | `File[]` | No | New tracks to add |
+**Response (200 OK):**
+```json
+{
+  "address": "0x123abc..."
+}
+```
 
 ---
 
-### Delete Collection Album
+### Get Collections (Filtered & Sorted)
 
-```
-POST /v1/collections/album/delete/:id
-```
-
-Deletes an album from a collection. Requires authentication and ownership.
-
----
-
-### Create Collection Video
-
-```
-POST /v1/collections/video/create
+```http
+POST /v1/collections
 ```
 
-Creates a video entry attached to a collection. Requires authentication.
-
-**Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.name` | `string` | Yes | Video name |
-| `fields.collection_id` | `string` | Yes | Parent collection ID |
-| `files.main_video` | `File` | Yes | Main video file |
-| `files.preview_video` | `File` | No | Preview/trailer video |
-| `files.thumbnail` | `File` | No | Thumbnail image |
-
----
-
-### Update Collection Video
-
-```
-POST /v1/collections/video/update/:id
-```
-
-Updates a video entry. Requires authentication and ownership.
-
----
-
-### Delete Collection Video
-
-```
-POST /v1/collections/video/delete/:id
-```
-
-Deletes a video from a collection. Requires authentication and ownership.
-
----
-
-### Create Collection Files (Documents)
-
-```
-POST /v1/collections/files/create
-```
-
-Creates a file attachment entry for a collection. Requires authentication.
-
-**Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.name` | `string` | Yes | File group name |
-| `fields.collection_id` | `string` | Yes | Parent collection ID |
-| `files.files` | `File[]` | Yes | Files to upload |
-
----
-
-### Update Collection Files
-
-```
-POST /v1/collections/files/update/:id
-```
-
-Updates a file entry. Requires authentication and ownership.
-
----
-
-### Delete Collection Files
-
-```
-POST /v1/collections/files/delete/:id
-```
-
-Deletes a file group from a collection. Requires authentication and ownership.
-
----
-
-### Delete Individual File Item
-
-```
-POST /v1/collections/delete/item/:id
-```
-
-Deletes a single file item (track, video, or document). Requires authentication.
-
----
-
-### Rename File
-
-```
-POST /v1/collections/rename
-```
-
-Renames a file. Requires authentication and ownership verification.
+Fetches a list of NFT collections based on various filters and sorting parameters. This endpoint creates a hash of the request body to cache the result.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `file_id` | `string` | Yes | File ID to rename |
-| `file_name` | `string` | Yes | New file name |
+```json
+{
+  "sortType": "date_created",
+  "sortOrder": "Desc",
+  "nftType": "Reward",
+  "rewardToken": "LOOP",
+  "platform": "fans"
+}
+```
+
+**Response (200 OK):**
+```json
+[
+  {
+    "name": "Collection Name",
+    "description": "Collection Description",
+    "icon": { "id": "uuid" },
+    "banner": { "id": "uuid" },
+    "url": "collection-url",
+    "address": "0x123...",
+    "rewardTokens": "LOOP",
+    "itemCount": 100,
+    "ownerCount": 50,
+    "floorPrice": 10.5,
+    "volumn": 1000.0,
+    "totalItems": 100
+  }
+]
+```
 
 ---
 
-### Update Collection Song
+### Get Collection Details By URL
 
+```http
+GET /v1/collection/:id
 ```
-POST /v1/collections/song/update
+
+Fetches comprehensive details for a specific collection by its URL slug. This endpoint uses caching.
+
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | `string` | The URL slug of the collection |
+
+**Response (200 OK):**
+```json
+{
+  "id": "uuid",
+  "name": "Collection Name",
+  "artist": {
+    "avatar": { "id": "uuid" },
+    "first_name": "First Name",
+    "username": "username",
+    "description": "Bio"
+  },
+  "icon": { "id": "uuid" },
+  "banner": { "id": "uuid" },
+  "description": "Description",
+  "url": "collection-url",
+  "address": "0x123...",
+  "floorPrice": 10.5,
+  "itemCount": 100,
+  "ownerCount": 50,
+  "volumn": 1000.0,
+  "daily_volume": 10.0,
+  "totalItems": 100,
+  "socials": {
+    "twitter": "string",
+    "instagram": "string",
+    "website": "string"
+  },
+  "faqs": { "Questions": [] }
+}
 ```
 
-Updates the song attached to a collection. Requires authentication.
+---
 
-**Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.collection_id` | `string` | Yes | Collection ID |
-| `files.song` | `File` | Yes | New song file |
+### Get Creator Collections
+
+```http
+GET /v1/collections/creator/:username
+```
+
+Fetches a list of collections created by a specific artist/creator. This endpoint uses caching.
+
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `username` | `string` | The username of the artist |
+
+**Response (200 OK):**
+```json
+[
+  {
+    "name": "Collection Name",
+    "url": "collection-url",
+    "banner": { "id": "uuid" },
+    "totalItems": 100
+  }
+]
+```

@@ -16,18 +16,31 @@ The Arena API provides endpoints for social interactions (comments, likes), coll
 
 ### Create Comment
 
-```
+```http
 POST /v1/arena/action/comment
 ```
 
-Adds a comment to a collection. Requires authentication. Triggers email notification to the collection artist.
+Adds a comment to a post. Requires authentication. Triggers email notification to the post artist.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `comment` | `string` | Yes | Comment text |
-| `collection` | `string` | Yes | Collection ID |
+```json
+{
+  "cookie": "string",
+  "userInfo": {
+    "id": "uuid",
+    "role": "artist",
+    "profile_id": "uuid",
+    "avatar": "file_uuid",
+    "first_name": "string",
+    "display_name": "string",
+    "username": "string",
+    "onboard": true,
+    "wallet_address": "string"
+  },
+  "comment": "string",
+  "post_id": "string"
+}
+```
 
 **Validation:** Uses `commentSchema` (Joi)
 
@@ -35,33 +48,49 @@ Adds a comment to a collection. Requires authentication. Triggers email notifica
 
 ### Delete Comment
 
-```
+```http
 POST /v1/arena/action/comment/delete
 ```
 
 Deletes a comment. Requires authentication and ownership.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `commentId` | `string` | Yes | Comment ID |
+```json
+{
+  "cookie": "string",
+  "commentId": "string"
+}
+```
 
 ---
 
 ### Like / Unlike
 
-```
+```http
 POST /v1/arena/action/like
 ```
 
-Toggles a like on a collection. Creates or removes a like entry. Triggers email notification.
+Toggles a like on a post. Creates or removes a like entry. Triggers email notification.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `collection` | `string` | Yes | Collection ID |
+```json
+{
+  "cookie": "string",
+  "userInfo": {
+    "id": "uuid",
+    "role": "artist",
+    "profile_id": "uuid",
+    "avatar": "file_uuid",
+    "first_name": "string",
+    "display_name": "string",
+    "username": "string",
+    "onboard": true,
+    "wallet_address": "string"
+  },
+  "post_id": "string"
+}
+```
+
 
 **Validation:** Uses `likeSchema` (Joi)
 
@@ -76,10 +105,12 @@ POST /v1/arena/action/follow
 Toggles following a creator. Requires authentication.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `followerId` | `string` | Yes | Creator user ID to follow |
+```json
+{
+  "cookie": "string",
+  "followerId": "string"
+}
+```
 
 ---
 
@@ -92,12 +123,17 @@ POST /v1/arena/action/follow/check
 Checks if the current user follows a creator.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `followerId` | `string` | Yes | Creator user ID |
+```json
+{
+  "cookie": "string",
+  "followerId": "string"
+}
+```
 
-**Response:** `true` or `false`
+**Response:**
+```json
+true
+```
 
 ---
 
@@ -125,7 +161,28 @@ Fetches paginated list of published collections from the marketplace.
 |-----------|------|-------------|
 | `host` | `string` | Optional hostname to filter for whitelabel domains |
 
-**Response:** Paginated collection list with artist info, banner, and pricing details.
+**Response:**
+```json
+{
+  "data": [
+    {
+      "id": "string",
+      "name": "string",
+      "artist": {
+        "id": "uuid",
+        "display_name": "string",
+        "avatar": { "id": "uuid" }
+      },
+      "banner": "uuid",
+      "price": 100
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "total": 10
+  }
+}
+```
 
 ---
 
@@ -137,7 +194,23 @@ GET /v1/arena/collections/:slug
 
 Fetches a specific collection by its project slug.
 
-**Response:** Full collection details including launchpad type, launch info, benefits, FAQs, gallery.
+**Response:**
+```json
+{
+  "id": "uuid",
+  "launchpad_type": "string",
+  "launchInfo": {
+    "startDate": "string",
+    "endDate": "string",
+    "mintPrice": "string",
+    "minPrice": "string",
+    "supply": "number"
+  },
+  "benefits": [],
+  "faqs": [],
+  "gallery": []
+}
+```
 
 ---
 
@@ -177,9 +250,11 @@ POST /v1/arena/collections/:slug/check
 Checks if user has liked or claimed a collection. Requires authentication.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
+```json
+{
+  "cookie": "string"
+}
+```
 
 ---
 
@@ -252,12 +327,14 @@ POST /v1/albums/create
 Creates a new album with images. Requires authentication.
 
 **Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.name` | `string` | Yes | Album name |
-| `fields.collection_id` | `string` | Yes | Collection to attach to |
-| `files.images` | `File[]` | Yes | Gallery images |
+```json
+{
+  "fields.cookie": "string",
+  "fields.name": "string",
+  "fields.collection_id": "string",
+  "files.images": []
+}
+```
 
 ---
 
@@ -270,11 +347,13 @@ POST /v1/albums/update/:id
 Updates album name or adds new images. Requires authentication and ownership.
 
 **Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.name` | `string` | No | Updated album name |
-| `files.images` | `File[]` | No | New images to add |
+```json
+{
+  "fields.cookie": "string",
+  "fields.name": "string",
+  "files.images": []
+}
+```
 
 ---
 
@@ -307,11 +386,13 @@ POST /v1/albums/rename
 Renames a file in the gallery. Requires authentication and ownership.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `file_id` | `string` | Yes | File ID |
-| `file_name` | `string` | Yes | New file name |
+```json
+{
+  "cookie": "string",
+  "file_id": "string",
+  "file_name": "string"
+}
+```
 
 ---
 
@@ -377,9 +458,11 @@ POST /v1/arena/leaderboard/vote-stats
 Fetches vote statistics. Requires authentication.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
+```json
+{
+  "cookie": "string"
+}
+```
 
 ---
 
@@ -399,16 +482,25 @@ POST /v1/benefit/album
 Creates or updates a music album benefit for a collection. Requires authentication and collection ownership.
 
 **Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.collection_id` | `string` | Yes | Parent collection ID |
-| `fields.type` | `string` | Yes | `create` or `update` |
-| `fields.query` | `string` | No | GraphQL mutation fields (e.g., album name, genre) |
-| `fields.album_id` | `string` | Conditional | Required for `update` type |
-| `files.file` | `File[]` | No | Audio track files |
+```json
+{
+  "fields.cookie": "string",
+  "fields.collection_id": "string",
+  "fields.type": "string",
+  "fields.query": "string",
+  "fields.album_id": "string",
+  "files.file": []
+}
+```
 
-**Response:** Album object with tracks list.
+**Response:**
+```json
+{
+  "id": "uuid",
+  "title": "Album Title",
+  "tracks": []
+}
+```
 
 ---
 
@@ -426,11 +518,13 @@ Deletes specific tracks from an album benefit. Requires authentication and colle
 | `id` | `string` | Album ID |
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `collection_id` | `string` | Yes | Collection ID |
-| `ids` | `string[]` | Yes | Array of file IDs to delete |
+```json
+{
+  "cookie": "string",
+  "collection_id": "string",
+  "ids": []
+}
+```
 
 ---
 
@@ -443,18 +537,28 @@ POST /v1/benefit/video
 Creates or updates a video benefit for a collection. Requires authentication and collection ownership.
 
 **Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.collection_id` | `string` | Yes | Parent collection ID |
-| `fields.type` | `string` | Yes | `create` or `update` |
-| `fields.name` | `string` | Yes | Video name |
-| `fields.video_id` | `string` | Conditional | Required for `update` type |
-| `files.main_video` | `File` | No | Main video file |
-| `files.preview_video` | `File` | No | Preview/trailer video |
-| `files.thumbnail` | `File` | No | Thumbnail image |
+```json
+{
+  "fields.cookie": "string",
+  "fields.collection_id": "string",
+  "fields.type": "string",
+  "fields.name": "string",
+  "fields.video_id": "string",
+  "files.main_video": "file_binary",
+  "files.preview_video": "file_binary",
+  "files.thumbnail": "file_binary"
+}
+```
 
-**Response:** Video object with main video, preview, and thumbnail.
+**Response:**
+```json
+{
+  "id": "uuid",
+  "video_url": "url",
+  "preview_url": "url",
+  "thumbnail": "uuid"
+}
+```
 
 ---
 
@@ -467,17 +571,25 @@ POST /v1/benefit/gallery
 Creates or updates a gallery (image collection) benefit. Requires authentication and collection ownership.
 
 **Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.collection_id` | `string` | Yes | Parent collection ID |
-| `fields.type` | `string` | Yes | `create` or `update` |
-| `fields.name` | `string` | Yes (create) | Gallery name |
-| `fields.gallery_id` | `string` | Conditional | Required for `update` type |
-| `fields.query` | `string` | No | GraphQL mutation fields |
-| `files.file` | `File[]` | No | Gallery image files |
+```json
+{
+  "fields.cookie": "string",
+  "fields.collection_id": "string",
+  "fields.type": "string",
+  "fields.name": "string",
+  "fields.gallery_id": "string",
+  "fields.query": "string",
+  "files.file": []
+}
+```
 
-**Response:** Gallery object with gallery items.
+**Response:**
+```json
+{
+  "id": "uuid",
+  "items": []
+}
+```
 
 ---
 
@@ -495,11 +607,13 @@ Deletes specific items from a gallery benefit. Requires authentication and colle
 | `id` | `string` | Gallery ID |
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `collection_id` | `string` | Yes | Collection ID |
-| `ids` | `string[]` | Yes | Array of file IDs to delete |
+```json
+{
+  "cookie": "string",
+  "collection_id": "string",
+  "ids": []
+}
+```
 
 ---
 
@@ -512,16 +626,24 @@ POST /v1/benefit/files
 Creates or updates a downloadable files benefit. Requires authentication and collection ownership.
 
 **Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.collection_id` | `string` | Yes | Parent collection ID |
-| `fields.type` | `string` | Yes | `create` or `update` |
-| `fields.name` | `string` | Yes | File group name |
-| `fields.files_id` | `string` | Conditional | Required for `update` type |
-| `files.file` | `File[]` | No | Files to upload |
+```json
+{
+  "fields.cookie": "string",
+  "fields.collection_id": "string",
+  "fields.type": "string",
+  "fields.name": "string",
+  "fields.files_id": "string",
+  "files.file": []
+}
+```
 
-**Response:** Files object with attached file list.
+**Response:**
+```json
+{
+  "id": "uuid",
+  "files": []
+}
+```
 
 ---
 
@@ -534,11 +656,13 @@ POST /v1/benefit/delete
 Deletes a benefit (album, video, gallery, or files) from a collection. Requires authentication and collection ownership.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `benefit_type` | `string` | Yes | Type: `album`, `video`, `gallery`, `files` |
-| `benefit_id` | `string` | Yes | Benefit ID to delete |
+```json
+{
+  "cookie": "string",
+  "benefit_type": "string",
+  "benefit_id": "string"
+}
+```
 
 **Notes:**
 - Dynamically resolves collection name: `collection_{benefit_type}` (except `gallery` which is used directly)
@@ -562,18 +686,31 @@ POST /v1/arena/inbox/createInbox
 Creates a new inbox conversation with an initial message. Requires authentication. Sends email notification to the receiver.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `receiver_id` | `string` | Yes | Receiver user ID |
-| `title` | `string` | Yes | Conversation title |
-| `message` | `string` | Yes | Initial message content |
+```json
+{
+  "cookie": "string",
+  "receiver_id": "string",
+  "title": "string",
+  "message": "string"
+}
+```
 
 **Side Effects:**
 - Sends Brevo transactional email (template 40)
 - Sends Mixpanel event
 
-**Response:** Created inbox object with sender info and message.
+**Response:**
+```json
+{
+  "id": "uuid",
+  "sender": {
+    "id": "uuid",
+    "display_name": "string",
+    "avatar": "string"
+  },
+  "message": "string"
+}
+```
 
 ---
 
@@ -590,7 +727,26 @@ Fetches all inbox conversations for the authenticated user (both sent and receiv
 |--------|------|----------|-------------|
 | `user_cookie` | `string` | Yes | Auth cookie |
 
-**Response:** Array of inbox conversations sorted by last message date, each containing sender/receiver info and message count.
+**Response:**
+```json
+[
+  {
+    "id": "uuid",
+    "sender": {
+      "id": "uuid",
+      "display_name": "string",
+      "avatar": "string"
+    },
+    "receiver": {
+      "id": "uuid",
+      "display_name": "string",
+      "avatar": "string"
+    },
+    "message_count": 5,
+    "last_message_date": "2023-01-01T00:00:00Z"
+  }
+]
+```
 
 ---
 
@@ -603,15 +759,28 @@ POST /v1/arena/inbox/createMessage
 Sends a new message in an existing inbox conversation. Requires authentication.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `inbox_id` | `string` | Yes | Inbox conversation ID |
-| `message` | `string` | Yes | Message content |
+```json
+{
+  "cookie": "string",
+  "inbox_id": "string",
+  "message": "string"
+}
+```
 
 **Side Effects:** Sends Mixpanel event.
 
-**Response:** Created message object with creator info.
+**Response:**
+```json
+{
+  "id": "uuid",
+  "creator": {
+    "id": "uuid",
+    "display_name": "string",
+    "avatar": "string"
+  },
+  "message": "string"
+}
+```
 
 ---
 
@@ -632,7 +801,21 @@ Fetches all messages in an inbox conversation. Requires authentication and membe
 **Response:**
 ```json
 {
-  "inboxInfo": [{ "title": "string", "sender": {}, "receiver": {} }],
+  "inboxInfo": [
+    { 
+      "title": "string", 
+      "sender": {
+        "id": "uuid",
+        "display_name": "string",
+        "avatar": "string"
+      }, 
+      "receiver": {
+        "id": "uuid",
+        "display_name": "string",
+        "avatar": "string"
+      }
+    }
+  ],
   "messages": [
     { "creator": { "id": "string", "display_name": "string" }, "date_created": "string", "message": "string" }
   ]
@@ -662,10 +845,12 @@ Edits the content of a post. Requires authentication and ownership.
 | `id` | `string` | Post ID |
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `content` | `string` | Yes | Updated post content |
+```json
+{
+  "cookie": "string",
+  "content": "string"
+}
+```
 
 ---
 
@@ -701,3 +886,343 @@ Internal helper functions used by other arena modules. Not directly exposed as A
 | `fetchCollectionAddresses()` | Fetches all gated-content collection addresses |
 | `fetchLikedData({ userId, postIds })` | Fetches like status for posts by a user |
 | `handleLike({ create, id, userId })` | Creates or removes a post like |
+
+---
+
+## Additional Endpoints
+
+*(Discovered from source code)*
+
+### Actions API (`views/arena/actions.mjs`)
+
+#### Fetch By Date
+```http
+POST /v1/arena/action/fetchByDate
+```
+**Request Body:**
+```json
+{
+  "ids": [],
+  "page": 0,
+  "lastDate": "string"
+}
+```
+
+#### Account Setup
+```http
+POST /v1/arena/action/accountSetup
+```
+**Request Body:**
+```json
+{
+  "type": "string",
+  "email": "string",
+  "return_url": "string"
+}
+```
+
+### Main Arena API (`views/arena/index.mjs`)
+
+#### Post Event
+```http
+POST /v1/arena/event
+```
+**Request Body:**
+```json
+{
+  "cookie": "string",
+  "event": "string",
+  "eventId": "string"
+}
+```
+
+#### Page View
+```http
+POST /v1/arena/pageView
+```
+**Request Body:**
+```json
+{
+  "cookie": "string",
+  "path": "string"
+}
+```
+
+#### Feed
+```http
+POST /v1/arena/feed
+```
+**Request Body:**
+```json
+{
+  "page": 0,
+  "userInfo": {
+    "id": "uuid",
+    "role": "artist",
+    "profile_id": "uuid",
+    "avatar": "file_uuid",
+    "first_name": "string",
+    "display_name": "string",
+    "username": "string",
+    "onboard": true,
+    "wallet_address": "string"
+  },
+  "forYou": true
+}
+```
+
+#### Fetch Feed by Date
+```http
+POST /v1/arena/fetchByDate
+```
+**Request Body:**
+```json
+{
+  "ids": [],
+  "page": 0,
+  "lastDate": "string",
+  "userInfo": {
+    "id": "uuid",
+    "role": "artist",
+    "profile_id": "uuid",
+    "avatar": "file_uuid",
+    "first_name": "string",
+    "display_name": "string",
+    "username": "string",
+    "onboard": true,
+    "wallet_address": "string"
+  }
+}
+```
+
+#### Get Post Comments
+```http
+POST /v1/arena/comments
+```
+**Request Body:**
+```json
+{
+  "post_id": "string"
+}
+```
+
+#### Profile Feed
+```http
+POST /v1/arena/profile/feed
+```
+**Request Body:**
+```json
+{
+  "id": "string",
+  "page": 0,
+  "userInfo": {
+    "id": "uuid",
+    "role": "artist",
+    "profile_id": "uuid",
+    "avatar": "file_uuid",
+    "first_name": "string",
+    "display_name": "string",
+    "username": "string",
+    "onboard": true,
+    "wallet_address": "string"
+  },
+  "wall": true
+}
+```
+
+#### Get Profile
+```http
+GET /v1/arena/profile/:id
+```
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | `string` | Profile ID |
+
+#### Check Leaderboard
+```http
+POST /v1/arena/checkLeaderboard
+```
+**Request Body:**
+```json
+{
+  "cookie": "string",
+  "divisionId": "string",
+  "genreId": "string"
+}
+```
+
+#### Get Launchpads
+```http
+GET /v1/arena/launchpads
+```
+
+#### Get Latest Launchpad
+```http
+GET /v1/arena/launchpad/latest/:user
+```
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `user` | `string` | User ID |
+
+#### Post Event ID
+```http
+POST /v1/arena/events/:id
+```
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | `string` | Event ID |
+
+#### Change User Role
+```http
+POST /v1/arena/changeUserRole
+```
+**Request Body:**
+```json
+{
+  "cookie": "string",
+  "role": "string"
+}
+```
+
+#### Check Username
+```http
+POST /v1/arena/checkUsername
+```
+**Request Body:**
+```json
+{
+  "username": "string"
+}
+```
+
+### Arena Collections API (`views/arena/collections/index.mjs`)
+
+#### Get Collections
+```http
+GET /v1/arena/collections
+```
+**Query Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `page` | `number` | Page number |
+| `limit` | `number` | Items limit |
+
+#### Get Collections by Username
+```http
+GET /v1/arena/collections/:username
+```
+**Query Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `status` | `string` | Status filter |
+| `type` | `string` | Type filter |
+| `limit` | `number` | Items limit |
+
+#### Get Collections by ID
+```http
+GET /v1/arena/collections/byId/:id
+```
+**Query Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `status` | `string` | Status filter |
+| `type` | `string` | Type filter |
+| `limit` | `number` | Items limit |
+| `page` | `number` | Page number |
+| `isFree` | `boolean` | Free collection flag |
+
+#### Get Collections by Artist
+```http
+GET /v1/arena/collections/byArtist/:id
+```
+**Query Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `status` | `string` | Status filter |
+| `type` | `string` | Type filter |
+| `limit` | `number` | Items limit |
+| `page` | `number` | Page number |
+| `isFree` | `boolean` | Free collection flag |
+
+#### Get Artist NFTs
+```http
+GET /v1/arena/collections/artist/nft/:id/:limit?/:page?
+```
+
+#### Get NFT Owners
+```http
+GET /v1/arena/collections/nft_owners/:id
+```
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | `string` | NFT ID |
+
+### Courses API (`views/arena/courses/index.mjs`)
+
+#### Get Course Intro
+```http
+GET /v1/courses/intro/:id
+```
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | `string` | Course ID |
+
+#### Get Course Class
+```http
+GET /v1/courses/class/:id
+```
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | `string` | Class ID |
+
+### Leaderboard API (`views/arena/leaderboard/index.mjs`)
+
+#### Get My Leaderboard
+```http
+GET /v1/arena/leaderboard/me
+```
+
+#### Get Latest Leaderboard
+```http
+GET /v1/arena/leaderboard/latest
+```
+
+### Gallery API (`views/arena/gallery/index.mjs`)
+
+#### Get Galleries
+```http
+GET /v1/albums/galleries
+```
+
+#### Get Gallery by ID
+```http
+GET /v1/albums/gallery/:id
+```
+
+#### Delete Gallery
+```http
+DELETE /v1/albums/gallery/:id
+```
+
+#### Get Gallery by Slug
+```http
+GET /v1/albums/:slug
+```
+
+#### Get Gallery Intro
+```http
+GET /v1/albums/intro/:id
+```
+
+#### Get Gallery Class
+```http
+GET /v1/albums/class/:id
+```
+
+

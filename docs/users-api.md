@@ -1,323 +1,443 @@
 # Users API
 
 > **Source:** `views/users/`  
-> **Modules:** `auth.mjs`, `actions.mjs`, `profile.mjs`, `account.mjs`  
-> **Base URL:** `/v1/users`
+> **Modules:** `user/userActions.mjs`, `user/userProfile.mjs`, `user/auth/index.mjs`, `merchant/index.mjs`  
+> **Base URL:** `/v1/user`
 
 ## Overview
 
-The Users API manages user authentication, profile management, account settings, and user actions. It integrates with Directus for user data, Brevo for email campaigns, and Mixpanel for analytics.
+The Users API manages user profile updates, social interactions (following), wallet balances, payout requests, and merchant events.
 
 ---
 
-## Authentication API
+## Auth & Info API
 
-> **Source:** `views/users/auth.mjs`
+> **Source:** `views/users/user/auth/index.mjs`
 
-### Register
+### User Info
 
+```http
+POST /v1/user/userInfo
 ```
-POST /v1/users/register
-```
-
-Registers a new user account.
+Gets or creates user info based on the provided wallet address and cookie.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `email` | `string` | Yes | Email address |
-| `password` | `string` | Yes | Password (min 8 chars) |
-| `first_name` | `string` | Yes | First name |
-| `last_name` | `string` | No | Last name |
-
-**Side Effects:**
-- Creates user in Directus
-- Creates Brevo contact
-- Generates default wallet/address
-- Tracks Mixpanel registration event
-
-**Response:**
 ```json
 {
-  "success": true,
-  "token": "string",
-  "user": { "id": "string", "email": "string" }
+  "cookie": "string",
+  "address": "string"
 }
 ```
 
----
+**Query Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `platform` | `string` | Platform identifier |
 
-### Login
+### Following IDs
 
+```http
+POST /v1/user/followingIds
 ```
-POST /v1/users/login
-```
-
-Authenticates a user and returns a session token.
+Fetches an array of user IDs that the authenticated user is currently following.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `email` | `string` | Yes | Email address |
-| `password` | `string` | Yes | Password |
-
-**Response:**
 ```json
 {
-  "access_token": "string",
-  "refresh_token": "string",
-  "expires": "number"
+  "cookie": "string",
+  "userInfo": {
+    "id": "uuid",
+    "role": "artist",
+    "profile_id": "uuid",
+    "avatar": "file_uuid",
+    "first_name": "string",
+    "display_name": "string",
+    "username": "string",
+    "onboard": true,
+    "wallet_address": "string"
+  }
 }
 ```
 
----
+### Follow Count
 
-### Refresh Token
-
+```http
+POST /v1/user/followCount
 ```
-POST /v1/users/refresh
-```
-
-Refreshes an expired access token using a refresh token.
+Fetches the follower and following counts for the user.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `refresh_token` | `string` | Yes | Refresh token from login |
-
----
-
-### Logout
-
-```
-POST /v1/users/logout
+```json
+{
+  "userId": "string"
+}
 ```
 
-Logs out the user by invalidating the refresh token.
+### Following List
+
+```http
+POST /v1/user/followingList
+```
+Fetches the detailed list of users that the authenticated user follows.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `refresh_token` | `string` | Yes | Refresh token to invalidate |
-
----
-
-### Forgot Password
-
-```
-POST /v1/users/forgot-password
+```json
+{
+  "userId": "string",
+  "limit": 0,
+  "page": 0
+}
 ```
 
-Initiates a password reset flow by sending a reset email.
+### Follower List
+
+```http
+POST /v1/user/followerList
+```
+Fetches the detailed list of followers for the authenticated user.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `email` | `string` | Yes | Email address |
-
----
-
-### Reset Password
-
-```
-POST /v1/users/reset-password
+```json
+{
+  "userId": "string",
+  "limit": 0,
+  "page": 0
+}
 ```
 
-Resets the user's password using a reset token from email.
+### User Wallets
+
+```http
+POST /v1/user/user-wallets
+```
+Fetches the wallet addresses associated with the user account.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `token` | `string` | Yes | Reset token from email |
-| `password` | `string` | Yes | New password |
-
----
-
-### SSO Login
-
+```json
+{
+  "cookie": "string"
+}
 ```
-POST /v1/users/sso
-```
-
-Handles Single Sign-On authentication (Google, Apple, etc.).
-
-**Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `provider` | `string` | Yes | SSO provider (`google`, `apple`) |
-| `token` | `string` | Yes | Provider access token |
-
----
-
-## Profile API
-
-> **Source:** `views/users/profile.mjs`
-
-### Get Profile
-
-```
-POST /v1/users/profile
-```
-
-Fetches the authenticated user's profile. Requires authentication.
-
-**Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-
-**Response:** Full user profile with avatar, bio, social links, wallet addresses, and plan info.
-
----
-
-### Update Profile
-
-```
-POST /v1/users/profile/update
-```
-
-Updates the user's profile. Requires authentication.
-
-**Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.first_name` | `string` | No | First name |
-| `fields.last_name` | `string` | No | Last name |
-| `fields.display_name` | `string` | No | Display name |
-| `fields.username` | `string` | No | Username |
-| `fields.bio` | `string` | No | Bio text |
-| `fields.social_links` | `string` | No | Social links (JSON) |
-| `files.avatar` | `File` | No | Profile avatar |
-| `files.cover` | `File` | No | Cover image |
-| `files.banner` | `File` | No | Banner image |
-
-**Side Effects:**
-- Updates Brevo contact attributes
-- Tracks Mixpanel event
-
----
-
-### Get User by Username
-
-```
-GET /v1/users/profile/:username
-```
-
-Fetches a public user profile by username.
-
----
-
-## Account API
-
-> **Source:** `views/users/account.mjs`
-
-### Get Account Settings
-
-```
-POST /v1/users/account
-```
-
-Fetches the user's account settings (email, plan, wallet). Requires authentication.
-
----
-
-### Update Account Email
-
-```
-POST /v1/users/account/email
-```
-
-Updates the user's email address. Requires authentication and password verification.
-
-**Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `new_email` | `string` | Yes | New email address |
-| `password` | `string` | Yes | Current password for verification |
-
----
-
-### Change Password
-
-```
-POST /v1/users/account/password
-```
-
-Changes the user's password. Requires authentication.
-
-**Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `current_password` | `string` | Yes | Current password |
-| `new_password` | `string` | Yes | New password |
-
----
-
-### Delete Account
-
-```
-POST /v1/users/account/delete
-```
-
-Permanently deletes the user's account. Requires authentication and password verification.
-
-**Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `password` | `string` | Yes | Current password |
 
 ---
 
 ## User Actions API
 
-> **Source:** `views/users/actions.mjs`
+> **Source:** `views/users/user/userActions.mjs`
 
-### Get User Notifications
+### Create Post
 
+```http
+POST /v1/user/post
 ```
-POST /v1/users/notifications
+Creates a new post by the user.
+
+**Request Body (multipart/form-data):**
+```json
+{
+  "fields": {
+    "cookie": "string",
+    "user_id": "string",
+    "profile_id": "string",
+    "post_content": "string",
+    "post_visibility": "public",
+    "post_FileType": "image",
+    "wall_user": "string"
+  },
+  "files": {
+    "image": "file_binary",
+    "song": "file_binary"
+  }
+}
 ```
 
-Fetches notifications for the authenticated user. Requires authentication.
+### Check If Following
+
+```http
+POST /v1/user/isFollowing
+```
+Checks if the authenticated user is following a specific user.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `page` | `number` | No | Page number |
-| `limit` | `number` | No | Items per page |
+```json
+{
+  "cookie": "string",
+  "userInfo": {
+    "id": "uuid",
+    "role": "artist",
+    "profile_id": "uuid",
+    "avatar": "file_uuid",
+    "first_name": "string",
+    "display_name": "string",
+    "username": "string",
+    "onboard": true,
+    "wallet_address": "string"
+  },
+  "id": "string"
+}
+```
+
+### Follow / Unfollow
+
+```http
+POST /v1/user/follow
+```
+Toggles the follow status for another user.
+
+**Request Body:**
+```json
+{
+  "cookie": "string",
+  "userInfo": {
+    "id": "uuid",
+    "role": "artist",
+    "profile_id": "uuid",
+    "avatar": "file_uuid",
+    "first_name": "string",
+    "display_name": "string",
+    "username": "string",
+    "onboard": true,
+    "wallet_address": "string"
+  },
+  "follower_id": "string"
+}
+```
+
+### Update Field
+
+```http
+POST /v1/user/update_field/:id
+```
+Updates a specific field of the user profile by ID.
+
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | `string` | Profile ID |
+
+**Request Body:**
+```json
+{
+  "cookie": "string",
+  "about": "string"
+}
+```
+
+### Update Profile
+
+```http
+POST /v1/user/update_profile
+```
+Updates multiple profile fields at once for the authenticated user.
+
+**Request Body (multipart/form-data):**
+```json
+{
+  "fields": {
+    "cookie": "string",
+    "user_id": "string",
+    "profile_id": "string",
+    "profile_displayName": "string",
+    "profile_description": "string",
+    "profile_about": "string",
+    "profile_username": "string",
+    "profile_socials": "[{\"name\":\"twitter\",\"value\":\"username\"}]",
+    "profile_show_featured_song": true,
+    "profile_location": "string",
+    "profile_onboard": true,
+    "profile_type": "string"
+  },
+  "files": {
+    "profile_avatar": "file_binary",
+    "profile_background": "file_binary",
+    "profile_featured_song": "file_binary"
+  }
+}
+```
+
+### Update Genres
+
+```http
+POST /v1/user/update_genres
+```
+Updates the favorite genres of the user.
+
+**Request Body:**
+```json
+{
+  "cookie": "string",
+  "genresIds": [],
+  "profile_id": "string"
+}
+```
+
+### Add Favorite
+
+```http
+POST /v1/user/add_fav
+```
+Adds an item to the user's favorites list.
+
+**Request Body:**
+```json
+{
+  "address": "string",
+  "platform": "string",
+  "type": "string",
+  "id": "string"
+}
+```
+
+### Get Account Balance
+
+```http
+POST /v1/user/account/balance
+```
+Fetches the user's account balance.
+
+**Request Body:**
+```json
+{
+  "cookie": "string"
+}
+```
+
+### Payout History
+
+```http
+POST /v1/user/payout/history
+```
+Fetches the history of payout requests for the user.
+
+**Request Body:**
+```json
+{
+  "cookie": "string"
+}
+```
+
+### Request Payout
+
+```http
+POST /v1/user/payout/request
+```
+Submits a new payout request for the user's balance.
+
+**Request Body:**
+```json
+{
+  "cookie": "string",
+  "amount": 0,
+  "platform": "string",
+  "payout_email": "string",
+  "full_name": "string",
+  "whatsapp": "string"
+}
+```
+
+### Check Account
+
+```http
+POST /v1/user/checkAccount
+```
+Checks the status or validity of the user's account.
+
+**Request Body:**
+```json
+{
+  "email": "string"
+}
+```
+
+### Send Payout Email
+
+```http
+POST /v1/user/sendPayoutEmail
+```
+Sends a notification email regarding a payout.
+
+**Request Body:**
+```json
+{
+  "cookie": "string"
+}
+```
+
+### Send Form Email
+
+```http
+POST /v1/user/sendFormEmail
+```
+Sends an email related to a form submission by the user.
+
+**Request Body:**
+```json
+{
+  "cookie": "string",
+  "subject": "string",
+  "message": "string"
+}
+```
 
 ---
 
-### Mark Notification as Read
+## User Profile API
 
-```
-POST /v1/users/notifications/read
-```
+> **Source:** `views/users/user/userProfile.mjs`
 
-Marks one or more notifications as read. Requires authentication.
+### Update WhatsApp
+
+```http
+POST /v1/user/whatsapp
+```
+Updates the WhatsApp contact number for the user's profile.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `notification_ids` | `string[]` | Yes | Array of notification IDs |
+```json
+{
+  "cookie": "string",
+  "userInfo": {
+    "id": "uuid",
+    "role": "artist",
+    "profile_id": "uuid",
+    "avatar": "file_uuid",
+    "first_name": "string",
+    "display_name": "string",
+    "username": "string",
+    "onboard": true,
+    "wallet_address": "string"
+  },
+  "whatsapp": "string"
+}
+```
 
 ---
 
-### Get User's Wallet Info
+## Merchant API
 
-```
-POST /v1/users/wallet
-```
+> **Source:** `views/users/merchant/index.mjs`
 
-Fetches wallet addresses and balances for the authenticated user. Requires authentication.
+### Merchant Events
+
+```http
+POST /v1/user/events
+```
+Retrieves or processes merchant-related events for users with the merchant role.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
+```json
+{
+  "cookie": "string",
+  "userInfo": {
+    "id": "uuid",
+    "role": "artist",
+    "profile_id": "uuid",
+    "avatar": "file_uuid",
+    "first_name": "string",
+    "display_name": "string",
+    "username": "string",
+    "onboard": true,
+    "wallet_address": "string"
+  }
+}
+```

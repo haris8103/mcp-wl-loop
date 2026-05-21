@@ -59,11 +59,13 @@ POST /v1/arena/feed
 Fetches the feed for a creator, including posts, launchpad data, events, and albums.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `user` | `string` | Yes | Creator user ID |
-| `page` | `number` | No | Page number (default: 1) |
-| `limit` | `number` | No | Items per page (default: 10) |
+```json
+{
+  "user": "string",
+  "page": 0,
+  "limit": 0
+}
+```
 
 **Response:**
 ```json
@@ -93,13 +95,22 @@ POST /v1/arena/feed/create
 Creates a new feed post with optional image uploads. Requires authentication.
 
 **Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.content` | `string` | Yes | Post content |
-| `files.images` | `File[]` | No | Image attachments |
+```json
+{
+  "fields.cookie": "string",
+  "fields.content": "string",
+  "files.images": []
+}
+```
 
-**Response:** Created post object
+**Response:**
+```json
+{
+  "id": "uuid",
+  "content": "string",
+  "date_created": "2023-01-01T00:00:00Z"
+}
+```
 
 ---
 
@@ -112,10 +123,12 @@ POST /v1/arena/feed/delete
 Deletes a feed post. Requires authentication and ownership.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `postId` | `string` | Yes | Post ID to delete |
+```json
+{
+  "cookie": "string",
+  "postId": "string"
+}
+```
 
 ---
 
@@ -128,11 +141,13 @@ POST /v1/arena/feed/comments
 Fetches comments for a feed post.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `postId` | `string` | Yes | Feed post ID |
-| `page` | `number` | No | Page number |
-| `limit` | `number` | No | Items per page |
+```json
+{
+  "postId": "string",
+  "page": 0,
+  "limit": 0
+}
+```
 
 ---
 
@@ -145,11 +160,13 @@ POST /v1/arena/feed/comment
 Creates a comment on a feed post. Requires authentication.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `postId` | `string` | Yes | Feed post ID |
-| `comment` | `string` | Yes | Comment text |
+```json
+{
+  "cookie": "string",
+  "postId": "string",
+  "comment": "string"
+}
+```
 
 ---
 
@@ -162,10 +179,12 @@ POST /v1/arena/feed/like
 Toggles a like on a feed post. Requires authentication.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `postId` | `string` | Yes | Feed post ID |
+```json
+{
+  "cookie": "string",
+  "postId": "string"
+}
+```
 
 ---
 
@@ -192,7 +211,17 @@ GET /v1/arena/launchpads
 
 Fetches all published, non-completed launchpads sorted by status and date.
 
-**Response:** Array of launchpad objects with project name, slug, status, and banner.
+**Response:**
+```json
+[
+  {
+    "project_name": "string",
+    "slug": "string",
+    "status": "live",
+    "banner": "uuid"
+  }
+]
+```
 
 ---
 
@@ -225,13 +254,18 @@ POST /v1/arena/checkLeaderboard
 Checks if the authenticated user is in a specific leaderboard.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `divisionId` | `string` | Yes | Division ID |
-| `genreId` | `string` | Yes | Genre ID |
+```json
+{
+  "cookie": "string",
+  "divisionId": "string",
+  "genreId": "string"
+}
+```
 
-**Response:** `true` or `false`
+**Response:**
+```json
+true
+```
 
 ---
 
@@ -274,9 +308,11 @@ POST /v1/arena/changeUserRole
 Upgrades a user's role to artist. Requires authentication.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
+```json
+{
+  "cookie": "string"
+}
+```
 
 **Side Effects:**
 - Updates user role in Directus
@@ -294,10 +330,92 @@ POST /v1/arena/checkUsername
 Checks if a username is available.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `username` | `string` | Yes | Username to check (5-30 chars) |
+```json
+{
+  "username": "string"
+}
+```
 
-**Response:**
-- `200` — Username is available
-- `400` — Username is taken or invalid
+**Response (200 OK):**
+```json
+{
+  "message": "Username is available"
+}
+```
+**Response (400 Bad Request):**
+```json
+{
+  "error": "Username is taken or invalid"
+}
+```
+
+---
+
+## Actual Marketplace Endpoints
+
+> **Source:** `views/index.mjs`
+> **Base URL:** `/v1/marketplace`
+
+### Get Favorite Items
+
+```http
+GET /v1/marketplace/favs/:platoform/:id
+```
+
+Fetches the favorite items (collections and launchpads) for a specific user ID/wallet address on a given platform.
+
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `platoform` | `string` | Platform identifier |
+| `id` | `string` | User ID or wallet address |
+
+---
+
+### Check if Item is Favorite
+
+```http
+GET /v1/marketplace/favs/:platform/:type/:id/:address
+```
+
+Checks whether a specific item (collection, cosmos_launchpad, fans_launchpad) is favorited by the user.
+
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `platform` | `string` | Platform identifier |
+| `type` | `string` | Type of item |
+| `id` | `string` | Item ID |
+| `address` | `string` | Wallet address |
+
+---
+
+### Check Transaction Status
+
+```http
+GET /v1/marketplace/transaction_status/:transaction_id
+```
+
+Retrieves the status and history details of a specific payment transaction.
+
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `transaction_id` | `string` | ID of the transaction |
+
+---
+
+### Load Default Configurations
+
+```http
+POST /v1/marketplace/load_default
+```
+
+Fetches and synchronizes default content blocks and funnels for the artist's whitelabel domain. Handles background tasks like downloading/uploading default assets to the user's domain.
+
+**Headers:**
+| Header | Type | Required | Description |
+|--------|------|----------|-------------|
+| `user_cookie` | `string` | Yes | User authentication cookie |
+| `template` | `string` | Yes | Template name or ID |
+

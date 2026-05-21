@@ -1,183 +1,270 @@
 # Rewards API
 
 > **Source:** `views/rewards/`  
-> **Modules:** `quests.mjs`, `userQuests.mjs`, `userRewards.mjs`  
-> **Base URL:** `/v1/rewards`
+> **Modules:** `index.mjs`, `quests.mjs`, `userQuests.mjs`, `userRewards.mjs`  
+> **Base URL:** `/v1`
 
 ## Overview
 
-The Rewards API manages a quest-and-rewards system where users can complete quests (tasks) to earn XP, points, and other rewards. Quests can be daily, weekly, or one-time, and are categorized by type (social, engagement, etc.).
+The Rewards API manages the quest and rewards systems, tracking available quests, the rewards associated with them, and the user's progress and earned rewards.
+
+---
+
+## Rewards API
+
+> **Source:** `views/rewards/index.mjs`
+> **Base URL:** `/v1/rewards`
+
+### Get Rewards
+
+```http
+GET /v1/rewards
+```
+Fetches rewards based on query parameters. Requires authentication.
+
+### Create/Update Reward
+
+```http
+POST /v1/rewards
+```
+Creates or updates a reward object. Requires authentication.
+
+**Request Body (multipart/form-data):**
+```json
+{
+  "fields": {
+    "cookie": "string",
+    "name": "string",
+    "description": "string",
+    "start_date": "string",
+    "end_date": "string"
+  },
+  "files": {
+    "image": "file_binary"
+  }
+}
+```
+
+### List Rewards
+
+```http
+GET /v1/rewards/list
+```
+Lists available rewards. Requires authentication.
+
+**Query Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `page` | `number` | Page number (default: 1) |
+| `limit` | `number` | Item limit (default: 10) |
+
+### Get Reward By ID
+
+```http
+GET /v1/rewards/:reward_id
+```
+Fetches a specific reward by its ID. Requires authentication.
+
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `reward_id` | `string` | ID of the reward |
 
 ---
 
 ## Quests API
 
 > **Source:** `views/rewards/quests.mjs`
+> **Base URL:** `/v1/quests`
 
-### Get All Available Quests
+### Create/Update Quest
 
+```http
+POST /v1/quests
 ```
-GET /v1/rewards/quests
-```
+Creates or updates a quest. Requires authentication.
 
-Fetches all available quests.
-
-**Response:**
+**Request Body (multipart/form-data):**
 ```json
 {
-  "quests": [
-    {
-      "id": "string",
-      "name": "string",
-      "description": "string",
-      "xp_reward": "number",
-      "quest_type": "string",
-      "frequency": "string",
-      "is_active": "boolean"
-    }
-  ]
+  "fields": {
+    "name": "string",
+    "description": "string",
+    "points": 100,
+    "link_url": "https://example.com",
+    "link_option": true,
+    "file_upload_option": true,
+    "end_date": "2026-12-31"
+  },
+  "files": {
+    "image": "file_binary"
+  }
 }
 ```
 
----
+### List Quests
 
-### Get Quest by ID
-
+```http
+GET /v1/quests/list
 ```
-GET /v1/rewards/quests/:id
+Lists available quests. Requires authentication.
+
+**Query Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `page` | `number` | Page number (default: 1) |
+| `limit` | `number` | Item limit (default: 10) |
+
+### Get Quest By ID
+
+```http
+GET /v1/quests/:quest_id
 ```
+Fetches a specific quest by its ID. Requires authentication.
 
-Fetches a specific quest by its ID.
-
----
-
-### Get Quests by Type
-
-```
-GET /v1/rewards/quests/type/:type
-```
-
-Fetches quests filtered by type (e.g., `social`, `engagement`, `daily`).
-
----
-
-## User Quests API
-
-> **Source:** `views/rewards/userQuests.mjs`
-
-### Get User's Quest Status
-
-```
-POST /v1/rewards/user/quests
-```
-
-Fetches all quest statuses for the authenticated user (completed, in-progress, available).
-
-**Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-
-**Response:**
-```json
-{
-  "quests": [
-    {
-      "quest_id": "string",
-      "status": "string",
-      "progress": "number",
-      "completed_at": "string"
-    }
-  ]
-}
-```
-
----
-
-### Complete a Quest
-
-```
-POST /v1/rewards/user/quests/complete
-```
-
-Marks a quest as completed for the user and awards XP/rewards. Requires authentication.
-
-**Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `quest_id` | `string` | Yes | Quest ID to complete |
-
-**Validations:**
-- Quest must exist and be active
-- Quest must not already be completed (for one-time quests)
-- Daily/weekly quests check time-based reset
-
----
-
-### Update Quest Progress
-
-```
-POST /v1/rewards/user/quests/progress
-```
-
-Updates progress on a quest (e.g., incrementing a counter). Requires authentication.
-
-**Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `quest_id` | `string` | Yes | Quest ID |
-| `progress` | `number` | Yes | Progress increment value |
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `quest_id` | `string` | ID of the quest |
 
 ---
 
 ## User Rewards API
 
 > **Source:** `views/rewards/userRewards.mjs`
+> **Base URL:** `/v1/user_rewards`
 
-### Get User Rewards
+### Create/Update User Reward
 
+```http
+POST /v1/user_rewards
 ```
-POST /v1/rewards/user
-```
-
-Fetches reward balance and history for the authenticated user.
+Creates or updates a record indicating a reward earned by a user. Requires authentication.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-
-**Response:**
 ```json
 {
-  "total_xp": "number",
-  "level": "number",
-  "rewards": [
-    {
-      "id": "string",
-      "type": "string",
-      "amount": "number",
-      "date_earned": "string",
-      "source": "string"
-    }
-  ]
+  "reward_id": "string"
 }
 ```
 
----
+### List User Rewards
 
-### Get Reward Leaderboard
-
+```http
+GET /v1/user_rewards/list
 ```
-GET /v1/rewards/leaderboard/:page/:limit
-```
+Lists rewards earned by the authenticated user. Requires authentication.
 
-Fetches a paginated leaderboard of top users by XP/rewards.
+**Query Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `status` | `string` | Filter by status |
+| `page` | `number` | Page number (default: 1) |
+| `limit` | `number` | Item limit (default: 10) |
+
+### Get All User Rewards
+
+```http
+GET /v1/user_rewards/user/all
+```
+Fetches all user reward history for the authenticated user. Requires authentication.
+
+**Query Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `page` | `number` | Page number (default: 1) |
+| `limit` | `number` | Item limit (default: 10) |
+
+### Get User Reward By ID
+
+```http
+GET /v1/user_rewards/:user_reward_id
+```
+Fetches a specific user reward record by its ID. Requires authentication.
 
 **Path Parameters:**
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `page` | `number` | Page number |
-| `limit` | `number` | Items per page |
+| `user_reward_id` | `string` | ID of the user reward |
+
+---
+
+## User Quests API
+
+> **Source:** `views/rewards/userQuests.mjs`
+> **Base URL:** `/v1/user_quests`
+
+### Create/Update User Quest
+
+```http
+POST /v1/user_quests
+```
+Creates or updates a record tracking a user's progress on a quest. Requires authentication.
+
+**Request Body (multipart/form-data):**
+```json
+{
+  "fields": {
+    "quest_id": 1,
+    "url": "https://example.com"
+  },
+  "files": {
+    "image": "file_binary"
+  }
+}
+```
+
+### Change Quest Status
+
+```http
+POST /v1/user_quests/change_status
+```
+Changes the status of a user's quest (e.g. from in-progress to completed). Requires authentication.
+
+**Request Body:**
+```json
+{
+  "user_quest_id": "string",
+  "status": "string"
+}
+```
+
+### List User Quests
+
+```http
+GET /v1/user_quests/list
+```
+Lists quests associated with the authenticated user. Requires authentication.
+
+**Query Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `status` | `string` | Filter by status |
+| `page` | `number` | Page number (default: 1) |
+| `limit` | `number` | Item limit (default: 10) |
+
+### Get All User Quests
+
+```http
+GET /v1/user_quests/all
+```
+Fetches all user quest history for the authenticated user. Requires authentication.
+
+**Query Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `status` | `string` | Filter by status |
+| `page` | `number` | Page number (default: 1) |
+| `limit` | `number` | Item limit (default: 10) |
+
+### Get User Quest By ID
+
+```http
+GET /v1/user_quests/:quest_id
+```
+Fetches a specific user quest record by its ID. Requires authentication.
+
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `quest_id` | `string` | ID of the user quest |

@@ -27,16 +27,40 @@ Uploads a file to the system. The file is temporarily stored on the server befor
 | `cookie` | `string` | No | Alternative authentication cookie |
 
 **Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `files.file` | `File` | Yes | The file to upload |
+```json
+{
+  "files.file": "file_binary"
+}
+```
 
 **Validation:**
 - **Max File Size:** 10MB
 - **Allowed Types:** `jpeg`, `jpg`, `png`, `gif`, `pdf`, `doc`, `docx`
 
 **Response:**
-Returns the Directus file object upon successful upload.
+```json
+{
+  "id": "uuid",
+  "storage": "local",
+  "filename_disk": "string",
+  "filename_download": "string",
+  "title": "string",
+  "type": "string",
+  "folder": null,
+  "uploaded_by": "uuid",
+  "created_on": "string",
+  "modified_by": null,
+  "modified_on": "string",
+  "filesize": 12345,
+  "width": null,
+  "height": null,
+  "duration": null,
+  "description": null,
+  "location": null,
+  "tags": null,
+  "metadata": {}
+}
+```
 
 ---
 
@@ -81,11 +105,13 @@ POST /v1/file/rename
 Updates the title of an existing file. Requires that the authenticated user is the owner (creator) of the file.
 
 **Request Body (JSON):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Authentication cookie |
-| `file_id` | `string` | Yes | The ID of the file to rename |
-| `file_name` | `string` | Yes | The new title for the file |
+```json
+{
+  "cookie": "string",
+  "file_id": "string",
+  "file_name": "string"
+}
+```
 
 **Logic:**
 1. Validates the user's cookie.

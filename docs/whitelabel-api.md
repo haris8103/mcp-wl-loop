@@ -86,14 +86,36 @@ POST /v1/wl/domain
 Creates a new `.loop.fans` domain. Requires authentication via `user_cookie` header.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `domain` | `string` | Yes | Full domain (must end with `.loop.fans`) |
-| `logo` | `object` | No | Logo file `{ id: "file_id" }` |
-| `banner` | `object` | No | Banner file `{ id: "file_id" }` |
-| `settings` | `object` | No | Theme/config JSON (colors, fonts, etc.) |
+```json
+{
+  "domain": "subdomain.loop.fans",
+  "logo": {
+    "id": "file_uuid"
+  },
+  "banner": {
+    "id": "file_uuid"
+  },
+  "settings": {
+    "theme": "dark",
+    "colors": {
+      "primary": "#ffffff",
+      "secondary": "#000000"
+    }
+  }
+}
+```
 
-**Response (201):** Created domain object with `domain`, `status`, `logo`, `banner`, `settings`.
+**Response (201):**
+```json
+{
+  "id": "uuid",
+  "domain": "string",
+  "status": "published",
+  "logo": "file_id",
+  "banner": "file_id",
+  "settings": {}
+}
+```
 
 **Side Effects:**
 - Brevo: Adds user to list 60 (Started Onboarding)
@@ -115,16 +137,34 @@ Updates an existing domain. Verifies ownership by matching domain name + user pr
 | `domain` | `string` | Current domain name to update |
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `domain` | `string` | No | New domain name |
-| `logo` | `object` | No | New logo `{ id: "file_id" }` |
-| `banner` | `object` | No | New banner `{ id: "file_id" }` |
-| `settings` | `object` | No | Updated settings JSON |
-| `onBoard` | `string` | No | Onboarding step value |
-| `template_id` | `number` | No | Website template ID |
+```json
+{
+  "domain": "subdomain.loop.fans",
+  "logo": {
+    "id": "file_uuid"
+  },
+  "banner": {
+    "id": "file_uuid"
+  },
+  "settings": {
+    "theme": "dark",
+    "colors": {
+      "primary": "#ffffff",
+      "secondary": "#000000"
+    }
+  },
+  "onBoard": "completed",
+  "template_id": 1
+}
+```
 
-**Response (200):** Updated domain object.
+**Response (200):** 
+```json
+{
+  "id": "uuid",
+  "domain": "string"
+}
+```
 
 **Side Effects:** Mixpanel: `"Domain Updated"` event.
 
@@ -144,9 +184,11 @@ Changes the active website template for a domain. Also updates the domain's colo
 | `domain` | `string` | Domain name |
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `active_template` | `number` | Yes | Website template ID |
+```json
+{
+  "active_template": 0
+}
+```
 
 **Response (200):** Updated domain with `settings` and `website_template`.
 
@@ -220,9 +262,11 @@ POST /v1/wl/content_blocks
 Creates a content blocks container and optionally links to a domain. Requires authentication.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `domain` | `string` | No | Domain name to associate |
+```json
+{
+  "domain": "subdomain.loop.fans"
+}
+```
 
 **Response (201):** `{ "message": "Content blocks created successfully" }`
 
@@ -242,11 +286,34 @@ Updates the blocks array for a content blocks container. Requires authentication
 | `id` | `string` | Content blocks ID |
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `blocks` | `array` | Yes | Updated blocks array |
+```json
+{
+  "blocks": [
+    {
+      "collection": "album",
+      "item": {
+        "id": "album_id_uuid",
+        "name": "Album Name"
+      }
+    }
+  ]
+}
+```
 
-**Response (200):** `{ "id": "...", "blocks": [...] }`
+**Response (200):**
+```json
+{
+  "id": "uuid",
+  "blocks": [
+    {
+      "id": "uuid",
+      "order": 1,
+      "status": "published",
+      "type": "string"
+    }
+  ]
+}
+```
 
 **Side Effects:** Mixpanel: `"Content Blocks Updated"` event.
 
@@ -266,16 +333,40 @@ Reorders blocks within a content blocks container. Verifies ownership. Requires 
 | `id` | `string` | Content blocks ID |
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `blocks` | `array` | Yes | Array of `{ id: "block_id", order: number }` objects |
+```json
+{
+  "blocks": [
+    {
+      "id": "relationship_id_1",
+      "order": 1
+    },
+    {
+      "id": "relationship_id_2",
+      "order": 2
+    }
+  ]
+}
+```
 
 **Validation:**
 - `blocks` must be a non-empty array
 - Each block must have `id` and `order` properties
 - All block IDs must exist in the current content blocks
 
-**Response (200):** `{ "id": "...", "blocks": [...] }`
+**Response (200):**
+```json
+{
+  "id": "uuid",
+  "blocks": [
+    {
+      "id": "uuid",
+      "order": 1,
+      "status": "published",
+      "type": "string"
+    }
+  ]
+}
+```
 
 ---
 
@@ -305,7 +396,7 @@ Deletes a block relationship from a content blocks container. Verifies ownership
 
 **Response (200):**
 ```json
-{ "message": "Content block deleted successfully", "id": "..." }
+{ "message": "Content block deleted successfully", "id": "uuid" }
 ```
 
 **Side Effects:** Mixpanel: `"Content Block Deleted"` event.
@@ -326,15 +417,17 @@ Updates the `status` field (e.g. `"draft"` / `"published"`) of any block type. V
 | `contentBlockBlocksId` | `string` | The `content_blocks_blocks` item ID |
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `status` | `string` | Yes | `"draft"` or `"published"` |
+```json
+{
+  "status": "published"
+}
+```
 
 **Supported Collections:** `album`, `tracks_block`, `content_banner`, `contact_block`, `youtube_block`, `push_fm`
 
 **Response (200):**
 ```json
-{ "message": "Content block updated successfully", "id": "..." }
+{ "message": "Content block updated successfully", "id": "uuid" }
 ```
 
 ---
@@ -353,15 +446,23 @@ POST /v1/blocks/album_block
 Creates a photo/image album block. Requires authentication. Subject to plan content blocks limit.
 
 **Request Body (JSON):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `name` | `string` | Yes | Album name |
-| `description` | `string` | No | Album description |
-| `contentBlockId` | `string` | Yes | Parent content blocks container ID |
-| `layout` | `string` | No | Layout style (lowercased) |
-| `gallery` | `object` | Yes | Gallery object with images array |
-| `gallery.images` | `array` | Yes | Array of image objects |
-| `gallery.images[].directus_files_id` | `object` | Yes | `{ id, filename_download }` |
+```json
+{
+  "name": "My Album",
+  "description": "Album Description",
+  "contentBlockId": "content_block_container_uuid",
+  "layout": "grid",
+  "gallery": {
+    "images": [
+      {
+        "directus_files_id": {
+          "id": "image_file_uuid"
+        }
+      }
+    ]
+  }
+}
+```
 
 **Response (200):**
 ```json
@@ -369,10 +470,10 @@ Creates a photo/image album block. Requires authentication. Subject to plan cont
   "data": {
     "id": "album_id",
     "name": "My Album",
-    "description": "...",
+    "description": "string",
     "gallery": {
       "id": "gallery_id",
-      "images": [{ "featured": true, "directus_files_id": { "id": "..." } }]
+      "images": [{ "featured": true, "directus_files_id": { "id": "uuid" } }]
     }
   }
 }
@@ -391,17 +492,32 @@ PATCH /v1/blocks/album_block/:id
 Updates an existing album block. Requires authentication.
 
 **Request Body (JSON):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `id` | `string` | Yes | Album item ID |
-| `contentBlockId` | `string` | Yes | Content blocks container ID |
-| `name` | `string` | Conditional | Album name |
-| `description` | `string` | No | Description |
-| `gallery` | `object` | Conditional | Updated gallery |
-| `status` | `string` | No | `"draft"` or `"published"` |
-| `layout` | `string` | No | Layout style |
+```json
+{
+  "id": "album_id",
+  "contentBlockId": "content_blocks_id",
+  "name": "Updated Album",
+  "description": "Updated description",
+  "status": "published",
+  "layout": "grid",
+  "gallery": {
+    "images": [
+      {
+        "directus_files_id": {
+          "id": "image_file_uuid"
+        }
+      }
+    ]
+  }
+}
+```
 
-**Response (200):** Updated album data.
+**Response (200):**
+```json
+{
+  "message": "Updated album data."
+}
+```
 
 ---
 
@@ -419,18 +535,24 @@ POST /v1/blocks/youtube_block
 Creates a YouTube video embed block. Subject to plan content blocks limit.
 
 **Request Body (JSON):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `title` | `string` | Yes | Block title |
-| `description` | `string` | No | Description |
-| `embeds` | `array` | Yes | Array of embed objects (video URLs/IDs) |
-| `domain` | `string` | Yes | Domain identifier |
-| `blockId` | `string` | Yes | Content blocks container ID |
-| `layout` | `string` | No | Layout style |
+```json
+{
+  "id": "youtube_block_id",
+  "contentBlockId": "content_blocks_id",
+  "url": "https://youtube.com/watch?v=string",
+  "status": "published"
+}
+```
 
 **Response (200):**
 ```json
-{ "data": { "id": "...", "name": "...", "data": [...] } }
+{ 
+  "data": { 
+    "id": "uuid", 
+    "name": "string", 
+    "data": [] 
+  } 
+}
 ```
 
 **Side Effects:** Mixpanel: `"Youtube Block Created"`.
@@ -451,16 +573,75 @@ Updates a YouTube block. Verifies content block ownership.
 | `id` | `string` | YouTube block ID |
 
 **Request Body (JSON):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `blockId` | `string` | Yes | Content blocks container ID |
-| `title` | `string` | Conditional | Updated title |
-| `description` | `string` | No | Updated description |
-| `embeds` | `array` | Conditional | Updated embeds |
-| `status` | `string` | No | `"draft"` or `"published"` |
-| `layout` | `string` | No | Layout style |
+```json
+{
+  "blockId": "string",
+  "title": "string",
+  "description": "string",
+  "embeds": [],
+  "status": "string",
+  "layout": "string"
+}
+```
 
-**Response (200):** Updated YouTube block data.
+**Response (200):**
+```json
+{
+  "message": "Updated YouTube block data."
+}
+```
+
+---
+
+### Create Forms Block
+
+```http
+POST /v1/blocks/forms_block
+```
+
+Creates a forms block. Requires authentication and is subject to plan limits.
+
+**Request Body:**
+```json
+{
+  "blockId": "string"
+}
+```
+
+---
+
+### Create Free Drops Block
+
+```http
+POST /v1/blocks/free_drops
+```
+
+Creates a free drops block. Requires authentication and is subject to plan limits.
+
+**Request Body:**
+```json
+{
+  "blockId": "string"
+}
+```
+
+---
+
+### Create Paid Drops Block
+
+```http
+POST /v1/blocks/paid_drops
+```
+
+Creates a paid drops block. Requires authentication and is subject to plan limits.
+
+**Request Body:**
+```json
+{
+  "blockId": "string"
+}
+```
+
 
 ---
 
@@ -478,17 +659,25 @@ POST /v1/blocks/contact_block
 Creates a contact form/info block. Subject to plan content blocks limit.
 
 **Request Body (JSON):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `title` | `string` | Yes | Block title |
-| `description` | `string` | No | Description |
-| `contactInfo.contactMethods` | `array` | Yes | Array of contact method objects |
-| `domain` | `string` | Yes | Domain identifier |
-| `blockId` | `string` | Yes | Content blocks container ID |
+```json
+{
+  "title": "string",
+  "description": "string",
+  "contactInfo.contactMethods": [],
+  "domain": "string",
+  "blockId": "string"
+}
+```
 
 **Response (200):**
 ```json
-{ "data": { "id": "...", "title": "...", "methods": [...] } }
+{ 
+  "data": { 
+    "id": "uuid", 
+    "title": "string", 
+    "methods": [] 
+  } 
+}
 ```
 
 ---
@@ -507,15 +696,22 @@ Updates a contact block. Verifies content block ownership.
 | `id` | `string` | Contact block ID |
 
 **Request Body (JSON):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `blockId` | `string` | Yes | Content blocks container ID |
-| `title` | `string` | Conditional | Updated title |
-| `description` | `string` | No | Updated description |
-| `methods` | `array` | Conditional | Updated contact methods |
-| `status` | `string` | No | `"draft"` or `"published"` |
+```json
+{
+  "blockId": "string",
+  "title": "string",
+  "description": "string",
+  "methods": [],
+  "status": "string"
+}
+```
 
-**Response (200):** Updated contact block data.
+**Response (200):**
+```json
+{
+  "message": "Updated contact block data."
+}
+```
 
 ---
 
@@ -533,17 +729,24 @@ POST /v1/blocks/tracks_block
 Creates a music tracks block with audio file uploads. Requires authentication. Subject to plan limits.
 
 **Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.name` | `string` | Yes | Block name |
-| `fields.genre` | `string` | No | Genre ID |
-| `fields.contentBlockId` | `string` | Yes | Content blocks container ID |
-| `fields.layout` | `string` | No | Layout style |
-| `files.tracks` | `File[]` | Yes | Audio track files |
-| `files.cover` | `File` | No | Cover image |
+```json
+{
+  "fields.cookie": "string",
+  "fields.name": "string",
+  "fields.genre": "string",
+  "fields.contentBlockId": "string",
+  "fields.layout": "string",
+  "files.tracks": [],
+  "files.cover": "file_binary"
+}
+```
 
-**Response (200):** Created tracks block with track listing.
+**Response (200):**
+```json
+{
+  "message": "Created tracks block with track listing."
+}
+```
 
 ---
 
@@ -571,17 +774,24 @@ POST /v1/blocks/banner_block
 Creates a banner image block with image upload. Requires authentication. Subject to plan limits.
 
 **Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.title` | `string` | No | Banner title |
-| `fields.subtitle` | `string` | No | Banner subtitle |
-| `fields.link` | `string` | No | Banner click-through URL |
-| `fields.contentBlockId` | `string` | Yes | Content blocks container ID |
-| `fields.layout` | `string` | No | Layout style |
-| `files.image` | `File` | Yes | Banner image |
+```json
+{
+  "fields.cookie": "string",
+  "fields.title": "string",
+  "fields.subtitle": "string",
+  "fields.link": "string",
+  "fields.contentBlockId": "string",
+  "fields.layout": "string",
+  "files.image": "file_binary"
+}
+```
 
-**Response (200):** Created banner block.
+**Response (200):**
+```json
+{
+  "message": "Created banner block."
+}
+```
 
 ---
 
@@ -609,17 +819,24 @@ POST /v1/blocks/pushfm_block
 Creates a PushFM (music distribution/pre-save) block. Requires authentication. Subject to plan limits.
 
 **Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.title` | `string` | Yes | Block title |
-| `fields.release_date` | `string` | No | Release date |
-| `fields.links` | `string` | No | Streaming links (JSON) |
-| `fields.contentBlockId` | `string` | Yes | Content blocks container ID |
-| `fields.layout` | `string` | No | Layout style |
-| `files.artwork` | `File` | No | Artwork image |
+```json
+{
+  "fields.cookie": "string",
+  "fields.title": "string",
+  "fields.release_date": "string",
+  "fields.links": "string",
+  "fields.contentBlockId": "string",
+  "fields.layout": "string",
+  "files.artwork": "file_binary"
+}
+```
 
-**Response (200):** Created PushFM block.
+**Response (200):**
+```json
+{
+  "message": "Created PushFM block."
+}
+```
 
 ---
 
@@ -647,17 +864,19 @@ POST /v1/blocks/events
 Creates an event with image upload. Requires authentication. Subject to plan limits.
 
 **Request Body (multipart/form-data):**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `fields.cookie` | `string` | Yes | Auth cookie |
-| `fields.title` | `string` | Yes | Event title |
-| `fields.description` | `string` | No | Event description |
-| `fields.event_date` | `string` | Yes | Event date |
-| `fields.event_time` | `string` | No | Event time |
-| `fields.location` | `string` | No | Location |
-| `fields.ticket_url` | `string` | No | Ticket purchase URL |
-| `fields.status` | `string` | No | `"draft"` or `"published"` |
-| `files.cover_image` | `File` | No | Event cover image |
+```json
+{
+  "fields.cookie": "string",
+  "fields.title": "string",
+  "fields.description": "string",
+  "fields.event_date": "string",
+  "fields.event_time": "string",
+  "fields.location": "string",
+  "fields.ticket_url": "string",
+  "fields.status": "string",
+  "files.cover_image": "file_binary"
+}
+```
 
 ---
 

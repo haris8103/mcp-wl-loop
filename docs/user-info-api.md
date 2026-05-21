@@ -24,7 +24,7 @@ Get/create user info.
 **Request:**
 ```json
 {
-    "address": "0x589489.....",
+    "address": "0x589489",
     "cookie": "cookie"
 }
 ```
@@ -42,19 +42,19 @@ Get/create user info.
 		"display_name": null,
 		"username": null,
 		"onboard": false,
-		"wallet_address": "0x589489.....",
+		"wallet_address": "0x589489",
 		"wallet": {
 			"tokens": 0,
 			"value": 0
 		},
 		"wallets": {
 			"loop": {
-				"address": "loop1m5ps....",
+				"address": "loop1m5ps",
 				"pubKey": null
 			},
 			"starknet": {
-				"address": "0x589489....",
-				"pubKey": "0x70db39...."
+				"address": "0x589489",
+				"pubKey": "0x70db39"
 			}
 		}
 	}

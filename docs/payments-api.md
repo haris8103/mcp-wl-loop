@@ -11,80 +11,140 @@ The Payments API handles payment processing for NFT purchases, supporting Stripe
 
 ## Endpoints
 
-### Create Payment Intent
+### Generate Checkout URL
 
-```
-POST /v1/payment/create-intent
+```http
+POST /v1/payments/generate_checkout_url
 ```
 
-Creates a Stripe payment intent for an NFT purchase. Requires authentication.
+Generates a Stripe checkout URL for an NFT or item purchase.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `launchpadId` | `string` | Yes | Launchpad ID |
-| `amount` | `number` | Yes | Payment amount (in cents) |
-| `currency` | `string` | No | Currency code (default: `usd`) |
-
-**Response:**
 ```json
 {
-  "clientSecret": "string",
-  "paymentIntentId": "string"
+  "wallet_addr": "string",
+  "user": "string",
+  "launchpad_id": "string",
+  "collection_name": "string",
+  "collection_addr": "string",
+  "collection_desc": "string",
+  "payment_amount": 0,
+  "number_of_nfts": 0,
+  "document_id": "string",
+  "referral": "string",
+  "provider": "string"
 }
 ```
 
 ---
 
-### Confirm Payment
+### Payment Events
 
+```http
+POST /v1/payments/events
 ```
-POST /v1/payment/confirm
+```http
+POST /v1/mint/payment/events
 ```
 
-Confirms a successful payment and creates a payment history record. Requires authentication.
+Handles custom payment events or state changes for a transaction.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
-| `paymentIntentId` | `string` | Yes | Stripe payment intent ID |
-| `launchpadId` | `string` | Yes | Launchpad ID |
-
-**Side Effects:**
-- Creates `payment_history` record in Directus with status `APPROVED`
-- Triggers NFT mint process
-- Tracks Mixpanel event
+```json
+{
+  "data": {
+    "amount": 1000,
+    "currency": "usd",
+    "description": "Payment description",
+    "source": "tok_visa"
+  }
+}
+```
 
 ---
 
-### Get Payment History
+### Verify Payment
 
-```
-POST /v1/payment/history
+```http
+POST /v1/payments/verify
 ```
 
-Fetches payment history for the authenticated user. Requires authentication.
+Verifies the status of a payment transaction across various providers.
 
 **Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `cookie` | `string` | Yes | Auth cookie |
+```json
+{
+  "data": {
+    "amount": 1000,
+    "currency": "usd",
+    "description": "Payment description",
+    "source": "tok_visa"
+  }
+}
+```
 
-**Response:** Array of payment history objects with amounts, dates, and launchpad info.
+---
+
+### Stripe Verification
+
+```http
+POST /v1/payments/stripe/verify
+```
+
+Specifically verifies a Stripe payment status.
+
+**Request Body:**
+```json
+{
+  "data": {
+    "amount": 1000,
+    "currency": "usd",
+    "description": "Payment description",
+    "source": "tok_visa"
+  }
+}
+```
 
 ---
 
 ### Stripe Webhook
 
-```
-POST /v1/payment/webhook
+```http
+POST /v1/payments/webhook
 ```
 
-Processes Stripe webhook events for payment lifecycle management.
+Processes Stripe webhook events for payment lifecycle management (e.g. `checkout.session.completed`, `payment_intent.succeeded`).
 
-**Handled Events:**
-- `payment_intent.succeeded` — Marks payment as approved
-- `payment_intent.payment_failed` — Marks payment as failed
-- `charge.refunded` — Handles refund processing
+**Request Body:**
+```json
+{
+  "data": {
+    "amount": 1000,
+    "currency": "usd",
+    "description": "Payment description",
+    "source": "tok_visa"
+  }
+}
+```
+
+---
+
+### Create Payment Intent
+
+```http
+POST /v1/payments/intent
+```
+
+Creates a Stripe payment intent for custom checkout flows.
+
+**Request Body:**
+```json
+{
+  "collection_id": "string",
+  "quantity": 0,
+  "wallet_address": "string",
+  "user": "string",
+  "minPrice": "string"
+}
+```
+
