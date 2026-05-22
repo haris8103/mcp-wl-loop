@@ -206,7 +206,7 @@ The content blocks system is the container that holds all the blocks (album, tra
 ### Get Content Blocks
 
 ```
-GET /v1/wl/content_blocks/:domainId
+GET /v1/wl/content_blocks/:domain
 ```
 
 Fetches all content blocks for a domain. Requires authentication.
@@ -214,7 +214,7 @@ Fetches all content blocks for a domain. Requires authentication.
 **Path Parameters:**
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `domainId` | `string` | Domain ID |
+| `domain` | `string` | Domain ID or name |
 
 **Response (200):**
 ```json
@@ -235,7 +235,7 @@ Fetches all content blocks for a domain. Requires authentication.
 ### Enable Content Blocks for Domain
 
 ```
-POST /v1/wl/content_blocks/:domainId
+POST /v1/wl/content_blocks/:domain
 ```
 
 Creates a new content blocks container and links it to a domain. Requires authentication.
@@ -243,7 +243,7 @@ Creates a new content blocks container and links it to a domain. Requires authen
 **Path Parameters:**
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `domainId` | `string` | Domain ID to associate |
+| `domain` | `string` | Domain ID to associate |
 
 **Response (201):** `{ "id": "content_blocks_id" }`
 
@@ -423,7 +423,7 @@ Updates the `status` field (e.g. `"draft"` / `"published"`) of any block type. V
 }
 ```
 
-**Supported Collections:** `album`, `tracks_block`, `content_banner`, `contact_block`, `youtube_block`, `push_fm`
+**Supported Collections:** `album`, `tracks_block`, `content_banner`, `contact_block`, `youtube_block`, `push_fm`, `forms_block`, `free_drops`, `paid_drops`
 
 **Response (200):**
 ```json
@@ -798,7 +798,7 @@ Creates a banner image block with image upload. Requires authentication. Subject
 ### Update Banner Block
 
 ```
-PUT /v1/blocks/banner_block/:id
+PATCH /v1/blocks/banner_block/:id
 ```
 
 Updates a banner block. Requires authentication and ownership.
@@ -813,7 +813,7 @@ Updates a banner block. Requires authentication and ownership.
 ### Create PushFM Block
 
 ```
-POST /v1/blocks/pushfm_block
+POST /v1/blocks/push_fm
 ```
 
 Creates a PushFM (music distribution/pre-save) block. Requires authentication. Subject to plan limits.
@@ -843,10 +843,27 @@ Creates a PushFM (music distribution/pre-save) block. Requires authentication. S
 ### Update PushFM Block
 
 ```
-PUT /v1/blocks/pushfm_block/:id
+PATCH /v1/blocks/push_fm/:id
 ```
 
 Updates a PushFM block. Requires authentication and ownership.
+
+---
+
+### Get PushFM Blocks
+
+```
+GET /v1/blocks/push_fm
+```
+
+Fetches PushFM blocks with optional filtering by ID, pagination.
+
+**Query Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | `string` | Optional PushFM block ID |
+| `limit` | `number` | Items per page (default: 10) |
+| `page` | `number` | Page number (default: 1) |
 
 ---
 
@@ -858,72 +875,155 @@ Updates a PushFM block. Requires authentication and ownership.
 ### Create Event
 
 ```
-POST /v1/blocks/events
+POST /v1/wl/events
 ```
 
-Creates an event with image upload. Requires authentication. Subject to plan limits.
+Creates an event container linked to a domain. Requires authentication.
 
-**Request Body (multipart/form-data):**
+**Request Body:**
 ```json
 {
-  "fields.cookie": "string",
-  "fields.title": "string",
-  "fields.description": "string",
-  "fields.event_date": "string",
-  "fields.event_time": "string",
-  "fields.location": "string",
-  "fields.ticket_url": "string",
-  "fields.status": "string",
-  "files.cover_image": "file_binary"
+  "domain": "subdomain.loop.fans"
 }
 ```
 
 ---
 
-### Update Event
+### Get Events
 
 ```
-POST /v1/blocks/events/:id
+GET /v1/wl/events
 ```
 
-Updates an existing event. Requires authentication and ownership.
+Fetches all events for the authenticated user's domain. Requires authentication.
+
+**Response (200):**
+```json
+{
+  "data": [
+    {
+      "id": "number",
+      "domain": { "domain": "string" },
+      "banner": { "id": "string" },
+      "event_items": [
+        {
+          "id": "number",
+          "status": "string",
+          "title": "string",
+          "venue": "string",
+          "date": "string",
+          "ticket_price": "number",
+          "is_sold_out": "boolean",
+          "event_url": "string"
+        }
+      ],
+      "count": "number"
+    }
+  ]
+}
+```
 
 ---
 
-### Delete Event
+### Update Event Banner
 
 ```
-DELETE /v1/blocks/events/:id
+PATCH /v1/wl/events/:id
 ```
 
-Deletes an event. Requires authentication and ownership.
-
----
-
-### Get Events by Artist
-
-```
-GET /v1/blocks/events/artist/:id
-```
-
-Fetches all published events for a specific artist. **Public endpoint**.
+Updates the banner image of an event. Requires authentication and ownership.
 
 **Path Parameters:**
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `id` | `string` | Artist user ID |
+| `id` | `string` | Event ID |
+
+**Request Body (multipart/form-data):**
+```json
+{
+  "fields.banner": "string",
+  "fields.domain": "string",
+  "files.image": "file_binary"
+}
+```
 
 ---
 
-### Get Event by ID
+### Create Event Item
 
 ```
-GET /v1/blocks/events/:id
+POST /v1/wl/events/:id/items
 ```
 
-Fetches a single event by ID. **Public endpoint**.
+Creates a new event item within an event. Requires authentication. Subject to plan limits.
+
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | `string` | Event ID |
+
+**Request Body:**
+```json
+{
+  "title": "string",
+  "venue": "string",
+  "date": "string",
+  "ticket_price": 0,
+  "is_sold_out": false,
+  "event_url": "string",
+  "domain": "string",
+  "status": "string"
+}
+```
 
 ---
+
+### Update Event Item
+
+```
+PATCH /v1/wl/events/:eventId/items/:itemId
+```
+
+Updates an existing event item. Requires authentication and ownership.
+
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `eventId` | `string` | Event ID |
+| `itemId` | `string` | Event item ID |
+
+**Request Body:**
+```json
+{
+  "title": "string",
+  "status": "string",
+  "venue": "string",
+  "date": "string",
+  "ticket_price": 0,
+  "is_sold_out": false,
+  "event_url": "string",
+  "domain": "string"
+}
+```
+
+### Delete Event Item
+
+```
+DELETE /v1/wl/events/:eventId/items/:itemId?domain=<domain>
+```
+
+Deletes an event item. Requires authentication and ownership.
+
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `eventId` | `string` | Event ID |
+| `itemId` | `string` | Event item ID |
+
+**Query Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `domain` | `string` | Yes | Domain name for ownership verification |
 
 ## Architecture Notes
 

@@ -57,7 +57,7 @@ function WalletApp() {
 #### Signup/Signin
 
 1. signup/signin with cloud wallet sdk
-2. POST /v1/user/userInfo to get details of the logged in user (please read resource user-api.md for more details of the api)
+2. POST /v1/user/userInfo to get details of the logged in user (please read resource users-api.md for more details of the api)
 
 #### Onboarding flow (domain setup, Website Design Customization, Pay platform fee (subscription))
 
@@ -83,7 +83,7 @@ content. Also need to check the domain is available or not. following are the st
     f. PATCH /v1/wl/domain/:domain endpoint to update domain configurations like logo, banner, website 
     template, settings etc. (please check resource whitelabel-api.md for more details of the api)
 
-    g. GET /v1/indexer/nfts/owner/nfts/owner/:address/:page/:limit to get the details of the nfts owned by 
+    g. GET /v1/indexer/nfts/owner/:address to get the details of the nfts owned by 
     the artist. (please check resource indexer-api.md for more details of the api)
 
     h. GET /v1/templates to get the list of the templates for the artist domain page. (please check 
@@ -130,7 +130,7 @@ view analytics, best selling drops/collections, payout history and monetization.
     more details of the api)
 
     c. POST /v1/user/action/account/balance to get the balance of the artist. (please check resource 
-    user-api.md for more details of the api)
+    users-api.md for more details of the api)
 
     d. POST /v1/user/followerList to get follower details. (please check resource umami-api.md for more 
     details of the api)
@@ -155,7 +155,7 @@ view analytics, best selling drops/collections, payout history and monetization.
     the event. (please check resource fan_funnel-api.md for more details of the api)
 
     k. POST /v1/user/action/payout/history to get the payout history of the artist. (please check resource 
-    user-api.md for more details of the api) 
+    users-api.md for more details of the api) 
     
 7. create content blocks for domain
 
@@ -165,7 +165,7 @@ view analytics, best selling drops/collections, payout history and monetization.
     b. POST /v1/wl/content_blocks endpoint can also be used to create content blocks which enables user to 
     rebrand his work.(please check resource whitelabel-api.md for more details of the api )
 
-    c. GET /v1/wl/content_blocks/:domainId endpoint to get the details of the content blocks on the basis
+    c. GET /v1/wl/content_blocks/:domain endpoint to get the details of the content blocks on the basis
     of domainId (please check resource whitelabel-api.md for more details of the api )
 
     d. PATCH /v1/wl/content_blocks/:id endpoint to update content blocks which enables user to rebrand his 
@@ -189,13 +189,13 @@ view analytics, best selling drops/collections, payout history and monetization.
         file/upload endpoint first and get file id then send it in the album_block update endpoint (for 
         more details please visit the resource file-api.md file).
 
-      3. GET /v1/wl/content_blocks/:domainId endpoint to get the details of the album block on the basis 
+      3. GET /v1/wl/content_blocks/:domain endpoint to get the details of the album block on the basis 
         of domainId (please check resource whitelabel-api.md for more details of the api)
 
-      4. DELETE /v1/blocks/:id endpoint to delete the content block of the album block  in the directus
+      4. DELETE /v1/blocks/:contentBlockBlocksId endpoint to delete the content block of the album block  in the directus
         (please check resource whitelabel-api.md for more details of the api)
 
-      5. PATCH /v1/blocks/update_status/:id endpoint to update status of album block (please check 
+      5. PATCH /v1/blocks/update_status/:contentBlockBlocksId endpoint to update status of album block (please check 
         resource whitelabel-api.md for more details of the api)
 
     b. tracksBlock:
@@ -207,13 +207,13 @@ view analytics, best selling drops/collections, payout history and monetization.
       2. PUT /v1/blocks/tracks_block/:id to update track block (please check resource whitelabel-api.md 
         for more details of the api). 
 
-      3. GET /v1/wl/content_blocks/:domainId to get the details of the track block on the basis of 
+      3. GET /v1/wl/content_blocks/:domain to get the details of the track block on the basis of 
         domainId (please check resource whitelabel-api.md for more details of the api)
 
-      4. DELETE /v1/blocks/:id to delete the content block of the track block  in the directus(please 
+      4. DELETE /v1/blocks/:contentBlockBlocksId to delete the content block of the track block  in the directus(please 
         check resource whitelabel-api.md for more details of the api)
 
-      5. PATCH /v1/blocks/update_status/:id to update status of track block (please check resource 
+      5. PATCH /v1/blocks/update_status/:contentBlockBlocksId to update status of track block (please check resource 
         whitelabel-api.md for more details of the api)
 
     c. youtubeBlock:
@@ -225,13 +225,13 @@ view analytics, best selling drops/collections, payout history and monetization.
       2. PUT /v1/blocks/youtube_block/:id endpoint to update youtube block (please check resource 
         whitelabel-api.md for more details of the api).
 
-      3. GET /v1/wl/content_blocks/:domainId endpoint to get the details of the youtube block on the 
+      3. GET /v1/wl/content_blocks/:domain endpoint to get the details of the youtube block on the 
         basis of domainId (please check resource whitelabel-api.md for more details of the api)
 
-      4. DELETE /v1/blocks/:id endpoint to delete the content block of the youtube block  in the directus
+      4. DELETE /v1/blocks/:contentBlockBlocksId endpoint to delete the content block of the youtube block  in the directus
         (please check resource whitelabel-api.md for more details of the api)
 
-      5. PATCH /v1/blocks/update_status/:id endpoint to update status of youtube block (please check 
+      5. PATCH /v1/blocks/update_status/:contentBlockBlocksId endpoint to update status of youtube block (please check 
         resource whitelabel-api.md for more details of the api)
 
     d. contactBlock:
@@ -243,35 +243,35 @@ view analytics, best selling drops/collections, payout history and monetization.
       2. PUT /v1/blocks/contact_block/:id endpoint to update contact block (please check resource 
         whitelabel-api.md for more details of the api).
 
-      3. GET /v1/wl/content_blocks/:domainId endpoint to get the details of the contact block on the 
+      3. GET /v1/wl/content_blocks/:domain endpoint to get the details of the contact block on the 
         basis of domainId (please check resource whitelabel-api.md for more details of the api)
 
-      4. DELETE /v1/blocks/:id endpoint to delete the content block of the contact block  in the directus
+      4. DELETE /v1/blocks/:contentBlockBlocksId endpoint to delete the content block of the contact block  in the directus
         (please check resource whitelabel-api.md for more details of the api)
 
-      5. PATCH /v1/blocks/update_status/:id endpoint to update status of contact block (please check 
+      5. PATCH /v1/blocks/update_status/:contentBlockBlocksId endpoint to update status of contact block (please check 
         resource whitelabel-api.md for more details of the api)
 
     e. pushFmBlock:
 
-      1. POST /v1/blocks/push_fm_block endpoint to create push fm block artist will be able to share the
+      1. POST /v1/blocks/push_fm endpoint to create push fm block artist will be able to share the
         embed url of his push fm and it will be displayed in the whitelabel page of the artist (please 
         check resource whitelabel-api.md for more details of the api). To upload the image for pushFM block 
         please use the post /v1/file/upload endpoint first and get the file id (for more details please 
         visit the resource file-api.md file) and send it the pushFM creation endpoint.
 
-      2. PATCH /v1/blocks/push_fm_block/:id endpoint to update push fm block (please check resource 
+      2. PATCH /v1/blocks/push_fm/:id endpoint to update push fm block (please check resource 
         whitelabel-api.md for more details of the api). To upload/change the image for pushFM block please 
         use the post /v1/file/upload endpoint first and get the file id (for more details please visit the
         resource file-api.md file) and send it the pushFM update endpoint
 
-      3. GET /v1/wl/content_blocks/:domainId endpoint to get the details of the push fm block on the 
+      3. GET /v1/wl/content_blocks/:domain endpoint to get the details of the push fm block on the 
         basis of domainId (please check resource whitelabel-api.md for more details of the api)
 
-      4. DELETE /v1/blocks/:id endpoint to delete the content block of the push fm block  in the directus
+      4. DELETE /v1/blocks/:contentBlockBlocksId endpoint to delete the content block of the push fm block  in the directus
         (please check resource whitelabel-api.md for more details of the api)
 
-      5. PATCH /v1/blocks/update_status/:id endpoint to update status of push fm block (please check 
+      5. PATCH /v1/blocks/update_status/:contentBlockBlocksId endpoint to update status of push fm block (please check 
         resource whitelabel-api.md for more details of the api)
 
     f. bannerBlock:
@@ -287,13 +287,13 @@ view analytics, best selling drops/collections, payout history and monetization.
         use post /v1/file/upload endpoint first and get the file id and send it in the banner update 
         endpoint(for more details please visit the resource file-api.md file).
 
-      3. GET /v1/wl/content_blocks/:domainId endpoint to get the details of the banner block on the basis
+      3. GET /v1/wl/content_blocks/:domain endpoint to get the details of the banner block on the basis
         of domainId (please check resource whitelabel-api.md for more details of the api)
 
-      4. DELETE /v1/blocks/:id endpoint to delete the content block of the banner block  in the directus
+      4. DELETE /v1/blocks/:contentBlockBlocksId endpoint to delete the content block of the banner block  in the directus
         (please check resource whitelabel-api.md for more details of the api)
 
-      5. PATCH /v1/blocks/update_status/:id endpoint to update status of banner block (please check 
+      5. PATCH /v1/blocks/update_status/:contentBlockBlocksId endpoint to update status of banner block (please check 
         resource whitelabel-api.md for more details of the api)
 
 9. Event module is where artist can make there events for upcoming items.
@@ -304,34 +304,31 @@ view analytics, best selling drops/collections, payout history and monetization.
     b. PATCH /v1/wl/events/:id endpoint to edit/update an existing event (please check resource 
     whitelabel-api.md for more details of the api).
 
-    c. DELETE /v1/wl/events/:id endpoint to delete an event (please check resource whitelabel-api.md for 
-    more details of the api).
-
-    d. GET /v1/wl/events endpoint to get all events of an artist (please check resource whitelabel-api.md 
+    c. GET /v1/wl/events endpoint to get all events of an artist (please check resource whitelabel-api.md 
     for more details of the api).
 
-    e. POST /v1/wl/events/:id/items endpoint to create an item for an event (please check resource 
+    d. POST /v1/wl/events/:id/items endpoint to create an item for an event (please check resource 
     whitelabel-api.md for more details of the api).
 
-    f. PATCH /v1/wl/events/:eventId/items/:itemId endpoint to edit/update an item for an event (please 
+    e. PATCH /v1/wl/events/:eventId/items/:itemId endpoint to edit/update an item for an event (please 
     check resource whitelabel-api.md for more details of the api).
 
-    g. DELETE /v1/wl/events/:eventId/items/:itemId endpoint to delete an item for an event (please check 
+    f. DELETE /v1/wl/events/:eventId/items/:itemId endpoint to delete an item for an event (please check 
     resource whitelabel-api.md for more details of the api).
 
 10. News module where artist can create post/feed for all users/community
 
-    a. POST /v1/user/action/post to create a post for all users/community (please check resource arena-api.
+    a. POST /v1/user/action/post to create a post for all users/community (please check resource users-api.
     md for more details of the api).
     
     b. POST /v1/arena/profile/feed endpoint to get post/feed for all users/community (please check resource 
-    news-api.md for more details of the api).
+    arena-api.md for more details of the api).
     
-    c. POST /v1/arena/action/like endpoint to like the post/feed (please check resource news-api.md for 
+    c. POST /v1/arena/action/like endpoint to like the post/feed (please check resource arena-api.md for 
     more details of the api).
     
-    d. POST /v1/arena/comments endpoint to like the reply/comment on any post/feed (please check resource 
-    news-api.md for more details of the api).
+    d. POST /v1/arena/comments to get the comments/replies on the post. (Please read resource arena-api.md for more details of the api).
+
 
 11. Create Launchpads/drops for nft launch with exclusive content for fans. There will be two types of 
 launchpads paid drops and free drops.
@@ -353,19 +350,19 @@ launchpads paid drops and free drops.
     resource arena-api.md for more details of the api)
     
     f. GET /v1/fans/fans_launchpad/insights/:id to get the max supply, sold, total revenue, profit (please 
-    read resource arena-api.md for more details of the api)
+    read resource fans-api.md for more details of the api)
     
     g. GET /v1/fans/fans_launchpad/insights/transactions/:id/:page to get the max supply, sold, total 
-    revenue, profit (please read resource arena-api.md for more details of the api)
+    revenue, profit (please read resource fans-api.md for more details of the api)
     
     h. GET /v1/arena/collections/nft_owners/:id endpoint to get all nft owners who purchased the nfts 
     (please read resource arena-api.md for more details of the api)
     
     i. POST /v1/fans/customers to get the total count of fans, distinct list of fans, page count of 
-    customers, nft_data (please read resource arena-api.md for more details of the api)
+    customers, nft_data (please read resource fans-api.md for more details of the api)
     
     j. POST /v1/fans/fans_launchpad/transactions/byCollection to get the orders of the drop's NFTS, total 
-    revenue, count of fans who purchased NFT (please check resource arena-api.md for more details of the 
+    revenue, count of fans who purchased NFT (please check resource fans-api.md for more details of the 
     api)
 
 12. In launchpad following are the drop items we can create:
@@ -375,43 +372,45 @@ launchpads paid drops and free drops.
       1. POST /v1/benefit/album to create/update music album drop (please read resource arena-api.md for
         more details of the api).
 
-      2. GET /v1/indexer/nftDetail/:id to get details of music album drop (please read resource arena-api.
+      2. GET /v1/indexer/nftDetail/:id to get details of music album drop (please read resource indexer-api.
         md for more details of the api).
 
-      3. DELETE /v1/benefit/delete endpoint to delete benefit/drop (please read resource arena-api.md for
+      3. POST /v1/benefit/delete endpoint to delete benefit/drop (please read resource arena-api.md for
         more details of the api)
 
       4. GET /v1/fans/fans_launchpad/:id endpoint to get details of music album drop (please read 
-        resource arena-api.md for more details of the api)
-        
+        resource fans-api.md for more details of the api)
+      
+      5. POST /v1/benefit/album/:id to delete music track from album drop (please read resource arena-api.md for
+        more details of the api).
 
     b. Video Drop:
 
       1. POST /v1/benefit/video to create/update video drop (please read resource arena-api.md for more
          details of the api).
 
-      2. GET /v1/indexer/nftDetail/:id to get details of video drop (please read resource arena-api.md 
+      2. GET /v1/indexer/nftDetail/:id to get details of video drop (please read resource indexer-api.md 
         for more details of the api).
 
-      3. DELETE /v1/benefit/delete endpoint to delete benefit/drop (please read resource arena-api.md for
+      3. POST /v1/benefit/delete endpoint to delete benefit/drop (please read resource arena-api.md for
          more details of the api)
 
       4. GET /v1/fans/fans_launchpad/:id endpoint to get details of video drop (please read resource 
-        arena-api.md for more details of the api)
+        fans-api.md for more details of the api)
 
     c. Files Drop:
 
       1. POST /v1/benefit/files to create/update files drop (please read resource arena-api.md for more 
         details of the api).
 
-      2. GET /v1/indexer/nftDetail/:id to get details of files drop (please read resource arena-api.md 
+      2. GET /v1/indexer/nftDetail/:id to get details of files drop (please read resource indexer-api.md 
         for more details of the api).
 
-      3. DELETE /v1/benefit/delete endpoint to delete benefit/drop (please read resource arena-api.md for 
+      3. POST /v1/benefit/delete endpoint to delete benefit/drop (please read resource arena-api.md for 
         more details of the api)
 
       4. GET /v1/fans/fans_launchpad/:id endpoint to get details of files drop (please read resource 
-        arena-api.md for more details of the api)
+        fans-api.md for more details of the api)
     
     d. Gallery Drop:
 
@@ -421,42 +420,39 @@ launchpads paid drops and free drops.
       2. POST /v1/benefit/gallery/:id endpoint to delete gallery item (please read resource arena-api.md 
         for more details of the api).
 
-      3. GET /v1/indexer/nftDetail/:id to get details of gallery drop (please read resource arena-api.md 
+      3. GET /v1/indexer/nftDetail/:id to get details of gallery drop (please read resource indexer-api.md 
         for more details of the api).
 
-      4. DELETE /v1/benefit/delete endpoint to delete benefit/drop (please read resource arena-api.md for
+      4. POST /v1/benefit/delete endpoint to delete benefit/drop (please read resource arena-api.md for
          more details of the api)
 
       5. GET /v1/fans/fans_launchpad/:id endpoint to get details of gallery drop (please read resource 
-        arena-api.md for more details of the api)
+        fans-api.md for more details of the api)
 
 13. In studio fan signup form feature will be available for incoming events for the registeration users in
  that event.
 
-    a. POST /v1/fan_funnel/pre_registeration endpoint to create fan signup forms for an event (please read 
-    resource arena-api.md for more details of the api).
+    a. POST /v1/fan_funnel/pre_registration endpoint to create fan signup forms for an event (please read 
+    resource fan-funnel-api.md for more details of the api).
     
-    b. POST /v1/fan_funnel/pre_registeration/:id endpoint to update a new fan signup form for an event 
-    (please read resource arena-api.md for more details of the api).
+    b. POST /v1/fan_funnel/pre_registration/:id endpoint to update a new fan signup form for an event 
+    (please read resource fan-funnel-api.md for more details of the api).
     
-    c. DELETE /v1/fan_funnel/pre_registeration/:id endpoint to delete fan signup form for an event (please 
-    read resource arena-api.md for more details of the api).    
+    c. DELETE /v1/fan_funnel/pre_registration//:fan_funnel_id/:id endpoint to delete fan signup form for an event (please 
+    read resource fan-funnel-api.md for more details of the api).    
     
-    d. GET /v1/fan_funnel endpoint to get details of all fan signup forms (please read resource arena-api.
+    d. GET /v1/fan_funnel endpoint to get details of all fan signup forms (please read resource fan-funnel-api.
     md for more details of the api).
     
-    e. GET /v1/fan_funnel/pre_registeration/fans/:id/count endpoint to get count of fans who signed up for 
-    an event (please read resource arena-api.md for more details of the api).
+    e. GET /v1/fan_funnel/pre_registration/fans/:id/count endpoint to get count of fans who signed up for 
+    an event (please read resource fan-funnel-api.md for more details of the api).
     
-    f. GET /v1/fan_funnel/pre_registeration/artist/fans endpoint to get details of all fan signup forms 
-    submissions for an event (please read resource arena-api.md for more details of the api).
-    
-    g. POST /v1/fan_funnel/pre_registeration/artist/fans endpoint to get details of all fan signup forms 
-    submissions for an event (please read resource arena-api.md for more details of the api).
+    f. POST /v1/fan_funnel/pre_registration/artist/fans endpoint to get details of all fan signup forms 
+    submissions for an event (please read resource fan-funnel-api.md for more details of the api).
 
 14. Support module for the artist to provide support technical support.
 
-    a. POST /v1/user/action/sendFormEmail to provide support to the artist
+    a. POST /v1/user/action/sendFormEmail to provide support to the artist (please read resource users-api.md for more details of the api).
 
 
     
@@ -473,22 +469,23 @@ launchpads paid drops and free drops.
 
   #### Home page
   
-  1. GET /v1/wl/domain to get domain details
-  2. POST /v1/user/userInfo (if user logged in/just signup) to get details of the logged in user (please read resource user-api.md for more details of the api)
-  3. https://api-wl.loop.fans/api/items/domains to get the domain details of the artist.
-  4. GET https://api-wl.loop.fans/api/items/content_blocks to get the content blocks of the artist.
-  5. GET https://api-wl.loop.fans/api/items/fan_funnel to get the fan funnel details of the artist where a fan can register for upcoming events by filling the form.
-  6. GET /v1/fan_funnel/pre_registration/:id to get the fan signup form details of a particular fan_funnel.
-  7. POST /v1/fan_funnel/:id/register/check to check if the fan is already registered for that fan_funnel item.
-  8. POST /v1/fan_funnel/:id/register to register for that fan_funnel item.
-  9. GET https://api-wl.loop.fans/api/items/content_blocks to get the content block details of the atrtist.
-  10. GET https://api-wl.loop.fans/api/items/fans_launchpad to get the details of the artist paid drops. 
-  11. GET https://api-wl.loop.fans/api/items/fans_launchpad_free to get the details of the artist free drops.
-  12. GET /v1/fans/fans_launchpad/:id?isId=true to get the details of the artist paid or free drop by providing if fan select particular drop.
-  13. POST /v1/user/user-wallets to get the details of the logged in users wallet address.
-  14. POST /v1/fans/nft/owner to check the user is owner of the nft.
-  15. POST /v1/minter/mint to mint the free drop nft
-  16. POST /v1/payment/intent to create payment intent for paid drop for payment of the nft to get the exclusive content of the artist. Stripe is used for payment.
+  1. GET /v1/wl/domain to get domain details (please refer whitelabel-api.md for more details of the api)
+  2. POST /v1/user/userInfo (if user logged in/just signup) to get details of the logged in user (please read resource users-api.md for more details of the api)
+  3. GET https://api-wl.loop.fans/api/items/domains to get the domain details of the artist. (please refer loop_wl_middleware_api.md for the details of the api please look into the endpoint /api/:collection/*)
+  4. GET https://api-wl.loop.fans/api/items/content_blocks to get the content blocks of the artist. (please refer loop_wl_middleware_api.md for the details of the api please look into the endpoint /api/:collection/*)
+  5. GET https://api-wl.loop.fans/api/items/fan_funnel to get the fan funnel details of the artist where a fan can register for upcoming events by filling the form. (please refer loop_wl_middleware_api.md for the details of the api please look into the endpoint /api/:collection/*)
+  6. GET /v1/fan_funnel/pre_registration/:id to get the fan signup form details of a particular fan_funnel. (please read resource fan-funnel-api.md for more details of the api).
+  7. POST /v1/fan_funnel/:id/register/check to check if the fan is already registered for that fan_funnel item. (please 
+    read resource fan-funnel-api.md for more details of the api).
+  8. POST /v1/fan_funnel/:id/register to register for that fan_funnel item.  (please read resource fan-funnel-api.md for more details of the api). 
+  9. GET https://api-wl.loop.fans/api/items/content_blocks to get the content block details of the atrtist. (please refer loop_wl_middleware_api.md for the details of the api please look into the endpoint /api/:collection/*)
+  10. GET https://api-wl.loop.fans/api/items/fans_launchpad to get the details of the artist paid drops. (please refer loop_wl_middleware_api.md for the details of the api please look into the endpoint /api/:collection/*)
+  11. GET https://api-wl.loop.fans/api/items/fans_launchpad_free to get the details of the artist free drops.(please refer loop_wl_middleware_api.md for the details of the api please look into the endpoint /api/:collection/*)
+  12. GET /v1/fans/fans_launchpad/:id?isId=true to get the details of the artist paid or free drop by providing if fan select particular drop. (please refer fans-api.md for more details of the api).
+  13. POST /v1/user/user-wallets to get the details of the logged in users wallet address. (please read resource users-api.md for more details of the api).
+  14. POST /v1/fans/nft/owner to check the user is owner of the nft. (please read resource fans-api.md for more details of the api).
+  15. POST /v1/minter/mint to mint the free drop nft (please read resource minter-api.md for more details of the api).
+  16. POST /v1/payment/intent to create payment intent for paid drop for payment of the nft to get the exclusive content of the artist. Stripe is used for payment. (please read resource payment-api.md for more details of the api).
 
 
   #### Post/feed/news
@@ -501,10 +498,10 @@ launchpads paid drops and free drops.
 
   #### Music Library
 
-  1. GET /v1/music/albums to get the list of albums of the artist.
+  1. GET /v1/music/albums to get the list of albums of the artist.(Please read resource music-library-api.md for more details of the api)
 
   #### Events
   
-  1. GET https://api-wl.loop.fans/api/items/wl_events to get the list of events of the artist.
+  1. GET https://api-wl.loop.fans/api/items/wl_events to get the list of events of the artist.(Please refer loop_wl_middleware_api.md for the details of the api please look into the endpoint /api/:collection/*)
   
   

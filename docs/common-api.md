@@ -15,7 +15,7 @@ The Common API provides shared platform-level endpoints, such as platform FAQs, 
 ### Default Route
 
 ```http
-GET /v1/
+GET /
 ```
 
 Health check endpoint. Returns a simple `"Hello, world"` message.

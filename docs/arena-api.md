@@ -145,20 +145,16 @@ true
 ### Fetch Collections
 
 ```
-GET /v1/arena/collections/:page/:limit
+GET /v1/arena/collections
 ```
 
 Fetches paginated list of published collections from the marketplace.
 
-**Path Parameters:**
+**Query Parameters:**
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `page` | `number` | Page number |
 | `limit` | `number` | Items per page |
-
-**Query Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
 | `host` | `string` | Optional hostname to filter for whitelabel domains |
 
 **Response:**
@@ -214,47 +210,88 @@ Fetches a specific collection by its project slug.
 
 ---
 
-### Fetch Creator Collections
+### Fetch Collections by Artist
 
 ```
-GET /v1/arena/collections/creator/:id/:page/:limit
+GET /v1/arena/collections/byArtist/:id
 ```
 
-Fetches paginated collections for a specific creator.
+Fetches collections for a specific artist.
 
 **Path Parameters:**
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `id` | `string` | Creator user ID |
-| `page` | `number` | Page number |
+| `id` | `string` | Artist user ID |
+
+**Query Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `status` | `string` | Status filter |
+| `type` | `string` | Type filter |
 | `limit` | `number` | Items per page |
+| `page` | `number` | Page number |
+| `isFree` | `boolean` | Free collection flag |
 
 ---
 
-### Fetch Collection Comments
+### Fetch Collection by ID
 
 ```
-GET /v1/arena/collections/:id/comments/:page/:limit
+GET /v1/arena/collections/byId/:id
 ```
 
-Fetches paginated comments for a collection.
+Fetches a specific collection by its ID.
+
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | `string` | Collection ID |
+
+**Query Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `status` | `string` | Status filter |
+| `type` | `string` | Type filter |
+| `limit` | `number` | Items per page |
+| `page` | `number` | Page number |
+| `isFree` | `boolean` | Free collection flag |
 
 ---
 
-### Check Collection Like / Claim Status
+### Fetch Artist NFTs
 
 ```
-POST /v1/arena/collections/:slug/check
+GET /v1/arena/collections/artist/nft/:id/:limit?/:page?
 ```
 
-Checks if user has liked or claimed a collection. Requires authentication.
+Fetches all NFTs owned by users that were minted from an artist's collections.
 
-**Request Body:**
-```json
-{
-  "cookie": "string"
-}
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | `string` | Artist user ID |
+| `limit` | `number` | Optional. Items per page (default: 10) |
+| `page` | `number` | Optional. Page number (default: 1) |
+
+---
+
+### Fetch Collection NFT Owners
+
 ```
+GET /v1/arena/collections/nft_owners/:id
+```
+
+Fetches the owners of NFTs for a specific collection.
+
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | `string` | Collection ID |
+
+**Query Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `collectionName` | `string` | Optional name of the collection |
 
 ---
 
@@ -1121,18 +1158,6 @@ GET /v1/arena/collections/:username
 | `type` | `string` | Type filter |
 | `limit` | `number` | Items limit |
 
-#### Get Collections by ID
-```http
-GET /v1/arena/collections/byId/:id
-```
-**Query Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `status` | `string` | Status filter |
-| `type` | `string` | Type filter |
-| `limit` | `number` | Items limit |
-| `page` | `number` | Page number |
-| `isFree` | `boolean` | Free collection flag |
 
 #### Get Collections by Artist
 ```http
@@ -1152,14 +1177,7 @@ GET /v1/arena/collections/byArtist/:id
 GET /v1/arena/collections/artist/nft/:id/:limit?/:page?
 ```
 
-#### Get NFT Owners
-```http
-GET /v1/arena/collections/nft_owners/:id
-```
-**Path Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `id` | `string` | NFT ID |
+
 
 ### Courses API (`views/arena/courses/index.mjs`)
 

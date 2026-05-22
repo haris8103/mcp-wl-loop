@@ -128,7 +128,7 @@ Fetches the wallet addresses associated with the user account.
 ### Create Post
 
 ```http
-POST /v1/user/post
+POST /v1/user/action/post
 ```
 Creates a new post by the user.
 
@@ -154,7 +154,7 @@ Creates a new post by the user.
 ### Check If Following
 
 ```http
-POST /v1/user/isFollowing
+POST /v1/user/action/isFollowing
 ```
 Checks if the authenticated user is following a specific user.
 
@@ -180,7 +180,7 @@ Checks if the authenticated user is following a specific user.
 ### Follow / Unfollow
 
 ```http
-POST /v1/user/follow
+POST /v1/user/action/follow
 ```
 Toggles the follow status for another user.
 
@@ -206,14 +206,14 @@ Toggles the follow status for another user.
 ### Update Field
 
 ```http
-POST /v1/user/update_field/:id
+POST /v1/user/action/update_field/:id
 ```
 Updates a specific field of the user profile by ID.
 
 **Path Parameters:**
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `id` | `string` | Profile ID |
+| `id` | `string` | The name of the field to update (e.g., `about`, `music`) |
 
 **Request Body:**
 ```json
@@ -226,7 +226,7 @@ Updates a specific field of the user profile by ID.
 ### Update Profile
 
 ```http
-POST /v1/user/update_profile
+POST /v1/user/action/update_profile
 ```
 Updates multiple profile fields at once for the authenticated user.
 
@@ -258,7 +258,7 @@ Updates multiple profile fields at once for the authenticated user.
 ### Update Genres
 
 ```http
-POST /v1/user/update_genres
+POST /v1/user/action/update_genres
 ```
 Updates the favorite genres of the user.
 
@@ -274,7 +274,7 @@ Updates the favorite genres of the user.
 ### Add Favorite
 
 ```http
-POST /v1/user/add_fav
+POST /v1/user/action/add_fav
 ```
 Adds an item to the user's favorites list.
 
@@ -291,7 +291,7 @@ Adds an item to the user's favorites list.
 ### Get Account Balance
 
 ```http
-POST /v1/user/account/balance
+POST /v1/user/action/account/balance
 ```
 Fetches the user's account balance.
 
@@ -305,7 +305,7 @@ Fetches the user's account balance.
 ### Payout History
 
 ```http
-POST /v1/user/payout/history
+POST /v1/user/action/payout/history
 ```
 Fetches the history of payout requests for the user.
 
@@ -319,7 +319,7 @@ Fetches the history of payout requests for the user.
 ### Request Payout
 
 ```http
-POST /v1/user/payout/request
+POST /v1/user/action/payout/request
 ```
 Submits a new payout request for the user's balance.
 
@@ -338,7 +338,7 @@ Submits a new payout request for the user's balance.
 ### Check Account
 
 ```http
-POST /v1/user/checkAccount
+POST /v1/user/action/checkAccount
 ```
 Checks the status or validity of the user's account.
 
@@ -352,7 +352,7 @@ Checks the status or validity of the user's account.
 ### Send Payout Email
 
 ```http
-POST /v1/user/sendPayoutEmail
+POST /v1/user/action/sendPayoutEmail
 ```
 Sends a notification email regarding a payout.
 
@@ -366,7 +366,7 @@ Sends a notification email regarding a payout.
 ### Send Form Email
 
 ```http
-POST /v1/user/sendFormEmail
+POST /v1/user/action/sendFormEmail
 ```
 Sends an email related to a form submission by the user.
 
@@ -383,12 +383,13 @@ Sends an email related to a form submission by the user.
 
 ## User Profile API
 
-> **Source:** `views/users/user/userProfile.mjs`
+> **Source:** `views/users/user/userProfile.mjs`  
+> **Base URL:** `/v1/user/update`
 
 ### Update WhatsApp
 
 ```http
-POST /v1/user/whatsapp
+POST /v1/user/update/whatsapp
 ```
 Updates the WhatsApp contact number for the user's profile.
 
@@ -415,12 +416,13 @@ Updates the WhatsApp contact number for the user's profile.
 
 ## Merchant API
 
-> **Source:** `views/users/merchant/index.mjs`
+> **Source:** `views/users/merchant/index.mjs`  
+> **Base URL:** `/v1/merchant`
 
 ### Merchant Events
 
 ```http
-POST /v1/user/events
+POST /v1/merchant/events
 ```
 Retrieves or processes merchant-related events for users with the merchant role.
 

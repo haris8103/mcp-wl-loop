@@ -14,10 +14,10 @@ The Payments API handles payment processing for NFT purchases, supporting Stripe
 ### Generate Checkout URL
 
 ```http
-POST /v1/payments/generate_checkout_url
+POST /v1/payment/generate_paymentid
 ```
 
-Generates a Stripe checkout URL for an NFT or item purchase.
+Generates a payment ID and checkout session for an NFT or item purchase.
 
 **Request Body:**
 ```json
@@ -41,35 +41,15 @@ Generates a Stripe checkout URL for an NFT or item purchase.
 ### Payment Events
 
 ```http
-POST /v1/payments/events
-```
-```http
-POST /v1/mint/payment/events
+POST /v1/payment/events
 ```
 
 Handles custom payment events or state changes for a transaction.
 
-**Request Body:**
-```json
-{
-  "data": {
-    "amount": 1000,
-    "currency": "usd",
-    "description": "Payment description",
-    "source": "tok_visa"
-  }
-}
-```
-
----
-
-### Verify Payment
-
+**Legacy Alias:**
 ```http
-POST /v1/payments/verify
+POST /v1/wompi/events
 ```
-
-Verifies the status of a payment transaction across various providers.
 
 **Request Body:**
 ```json
@@ -85,13 +65,45 @@ Verifies the status of a payment transaction across various providers.
 
 ---
 
-### Stripe Verification
+### Stripe Payment Events
 
 ```http
-POST /v1/payments/stripe/verify
+POST /v1/payment/events/stripe
 ```
 
-Specifically verifies a Stripe payment status.
+Handles Stripe-specific payment events.
+
+**Legacy Alias:**
+```http
+POST /v1/wompi/events/stripe
+```
+
+**Request Body:**
+```json
+{
+  "data": {
+    "amount": 1000,
+    "currency": "usd",
+    "description": "Payment description",
+    "source": "tok_visa"
+  }
+}
+```
+
+---
+
+### Wompi Payment Events
+
+```http
+POST /v1/payment/events/wompi
+```
+
+Handles Wompi-specific payment events.
+
+**Legacy Alias:**
+```http
+POST /v1/wompi/events/wompi
+```
 
 **Request Body:**
 ```json
@@ -110,7 +122,7 @@ Specifically verifies a Stripe payment status.
 ### Stripe Webhook
 
 ```http
-POST /v1/payments/webhook
+POST /v1/payment/webhook
 ```
 
 Processes Stripe webhook events for payment lifecycle management (e.g. `checkout.session.completed`, `payment_intent.succeeded`).
@@ -132,7 +144,7 @@ Processes Stripe webhook events for payment lifecycle management (e.g. `checkout
 ### Create Payment Intent
 
 ```http
-POST /v1/payments/intent
+POST /v1/payment/intent
 ```
 
 Creates a Stripe payment intent for custom checkout flows.
