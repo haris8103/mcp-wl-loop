@@ -46,9 +46,9 @@ export const createServer: () => ServerFactoryResponse = () => {
   // Create the server
   const server = new McpServer(
     {
-      name: "mcp-servers/everything",
-      title: "Everything Reference Server",
-      version: "2.0.0",
+      name: "mcp-loop-server",
+      title: "MCP Loop Server",
+      version: "1.0.0",
     },
     {
       // capabilities: {
@@ -130,40 +130,6 @@ export const createServer: () => ServerFactoryResponse = () => {
     }
   );
 
-
-  // User Info API Resource
-  server.registerResource(
-    "User Info API",
-    "loopfans://api/user-info",
-    {
-      description: "Detailed API documentation for user info",
-      mimeType: "text/markdown"
-    },
-    async () => {
-      try {
-        const content = await fs.promises.readFile(
-          "./docs/user-info-api.md",
-          "utf-8"
-        );
-        return {
-          contents: [{
-            uri: "loopfans://api/user-info",
-            mimeType: "text/markdown",
-            text: content
-          }]
-        };
-      } catch (error) {
-        console.error("Error reading user-info-api.md:", error);
-        return {
-          contents: [{
-            uri: "loopfans://api/user-info",
-            mimeType: "text/markdown",
-            text: "# Error\n\nFailed to load User Info API documentation."
-          }]
-        };
-      }
-    }
-  );
 
   // Fans & Creators API Resource
   server.registerResource(
