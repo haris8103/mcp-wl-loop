@@ -1,5 +1,3 @@
-
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import dotenv from "dotenv";
 import axios from "axios";
 import {
@@ -9,7 +7,6 @@ import {
 import express, { Request, Response } from "express";
 import { randomUUID } from "node:crypto";
 import cors from "cors";
-import * as fs from "fs";
 import { createServer } from "./server/index.js";
 
 dotenv.config();
