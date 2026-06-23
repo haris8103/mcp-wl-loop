@@ -22,16 +22,26 @@ Fetches all available subscription tiers and their corresponding active plans.
 
 **Response:**
 ```json
-[
-  {
-    "id": 1,
-    "name": "string",
-    "features": ["string"],
-    "description": "string",
-    "price_cents": 1000,
-    "billing_interval": "string"
+{
+  "subscriptionPlans": {
+    "subscription_tiers": [
+      {
+        "id": "uuid",
+        "name": "string",
+        "subscription_plans": [
+          {
+            "id": "uuid",
+            "name": "string",
+            "features": ["string"],
+            "description": "string",
+            "price_cents": 1000,
+            "billing_interval": "monthly"
+          }
+        ]
+      }
+    ]
   }
-]
+}
 ```
 
 ---
@@ -53,15 +63,28 @@ Fetches the currently authenticated user's active or trialing subscription plan.
 ```json
 {
   "id": "sub_123",
+  "date_created": "2023-01-01T00:00:00Z",
+  "date_updated": "2023-01-01T00:00:00Z",
+  "user": "user_uuid",
+  "tier": "tier_uuid",
+  "provider_customer_id": "cus_123",
+  "provider_subscription_id": "sub_123",
   "status": "active",
   "current_period_start": "2023-01-01T00:00:00Z",
   "current_period_end": "2023-02-01T00:00:00Z",
+  "cancel_at_period_end": false,
+  "canceled_at": null,
+  "trial_start": null,
+  "trial_end": null,
+  "provider": "stripe",
   "plan": {
-    "id": 1,
+    "id": "1",
     "name": "Pro Plan"
   }
 }
 ```
+
+**Frontend contract:** `Fans_Studio/src/app/api/billing.api.tsx` consumes this value as `UserSubscription` directly from `response.data`, not under an outer wrapper.
 
 ---
 

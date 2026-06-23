@@ -24,17 +24,27 @@ Generates a payment ID and checkout session for an NFT or item purchase.
 {
   "wallet_addr": "string",
   "user": "string",
-  "launchpad_id": "string",
+  "launchpad_id": 0,
   "collection_name": "string",
   "collection_addr": "string",
   "collection_desc": "string",
   "payment_amount": 0,
   "number_of_nfts": 0,
-  "document_id": "string",
   "referral": "string",
   "provider": "string"
 }
 ```
+
+**Response:**
+```json
+{
+  "data": {
+    "url": "https://checkout..."
+  }
+}
+```
+
+**Frontend contract:** `Fans_Studio/src/app/api/collections.api.tsx` reads the checkout URL from `result.data?.data?.url`.
 
 ---
 
@@ -159,4 +169,3 @@ Creates a Stripe payment intent for custom checkout flows.
   "minPrice": "string"
 }
 ```
-

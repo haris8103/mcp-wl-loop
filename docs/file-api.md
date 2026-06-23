@@ -39,28 +39,10 @@ Uploads a file to the system. The file is temporarily stored on the server befor
 
 **Response:**
 ```json
-{
-  "id": "uuid",
-  "storage": "local",
-  "filename_disk": "string",
-  "filename_download": "string",
-  "title": "string",
-  "type": "string",
-  "folder": null,
-  "uploaded_by": "uuid",
-  "created_on": "string",
-  "modified_by": null,
-  "modified_on": "string",
-  "filesize": 12345,
-  "width": null,
-  "height": null,
-  "duration": null,
-  "description": null,
-  "location": null,
-  "tags": null,
-  "metadata": {}
-}
+"file_uuid"
 ```
+
+**Frontend contract:** `Fans_Studio` sends the multipart field as `file` and consumes the upload response as the file ID directly. Some paths use `axios` and read `uploadResponse.data`; others use `fetch` and read `response.text()`.
 
 ---
 

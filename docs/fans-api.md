@@ -222,7 +222,7 @@ Fetches exclusive content for fans by ID.
 ### Get Fans Launchpad
 
 ```http
-GET /v1/fans/fans_launchpad/:id
+GET /v1/fans/fans_launchpad/:id?isId=true
 ```
 
 Fetches the details of a fans launchpad by ID.
@@ -235,7 +235,7 @@ Fetches the details of a fans launchpad by ID.
 **Path Parameters:**
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `id` | `string` | Launchpad ID |
+| `id` | `string` | Launchpad ID or Name |
 
 **Response:**
 ```json
@@ -260,6 +260,12 @@ Fetches the details of a fans launchpad by ID.
 |-----------|------|-------------|
 | `status` | `string` | Launchpad status filter |
 | `isId` | `boolean` | Flag if searching by ID |
+
+**Frontend contract:** `Fans_Studio` calls this endpoint in two ways:
+- `GET /v1/fans/fans_launchpad/:name` when fetching by slug/name.
+- `GET /v1/fans/fans_launchpad/:id?isId=true` when fetching by launchpad ID.
+
+The frontend consumes the raw `response.data`.
 
 **Response:**
 ```json
@@ -450,12 +456,12 @@ Fetches the transaction history (orders) for collections, with filtering options
 ```json
 {
   "collection_id": "string",
-  "page": 0,
-  "fan": "string",
-  "start_date": "string",
-  "end_date": "string"
+  "page": 1,
+  "fan": "string"
 }
 ```
+
+**Frontend contract:** `Fans_Studio/src/app/api/fanbase.api.js` sends only `collection_id`, `page`, and `fan`. `start_date` and `end_date` are not sent by the current frontend.
 
 ---
 
@@ -536,10 +542,16 @@ Manages customer records or audience data for fans/creators.
     "wallet_address": "string"
   },
   "collection_id": "string",
-  "search": "string",
-  "page": 0
+  "search": "string"
 }
 ```
+
+**Headers:**
+| Header | Type | Required | Description |
+|--------|------|----------|-------------|
+| `user_cookie` | `string` | Yes | Auth cookie |
+
+**Frontend contract:** `Fans_Studio/src/app/api/fanbase.api.js` sends `userInfo`, `collection_id`, and `search`; it does not send `page`.
 
 ---
 

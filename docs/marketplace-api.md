@@ -61,9 +61,19 @@ Fetches the feed for a creator, including posts, launchpad data, events, and alb
 **Request Body:**
 ```json
 {
-  "user": "string",
+  "userInfo": {
+    "id": "uuid",
+    "role": "artist",
+    "profile_id": "uuid",
+    "avatar": "file_uuid",
+    "first_name": "string",
+    "display_name": "string",
+    "username": "string",
+    "onboard": true,
+    "wallet_address": "string"
+  },
   "page": 0,
-  "limit": 0
+  "forYou": true
 }
 ```
 
@@ -126,7 +136,7 @@ Deletes a feed post. Requires authentication and ownership.
 ```json
 {
   "cookie": "string",
-  "postId": "string"
+  "post_id": "string"
 }
 ```
 
@@ -135,7 +145,7 @@ Deletes a feed post. Requires authentication and ownership.
 ### Get Feed Comments
 
 ```
-POST /v1/arena/feed/comments
+POST /v1/arena/comments
 ```
 
 Fetches comments for a feed post.
@@ -143,7 +153,7 @@ Fetches comments for a feed post.
 **Request Body:**
 ```json
 {
-  "postId": "string",
+  "post_id": "string",
   "page": 0,
   "limit": 0
 }
@@ -154,7 +164,7 @@ Fetches comments for a feed post.
 ### Create Feed Comment
 
 ```
-POST /v1/arena/feed/comment
+POST /v1/arena/action/comment
 ```
 
 Creates a comment on a feed post. Requires authentication.
@@ -163,8 +173,12 @@ Creates a comment on a feed post. Requires authentication.
 ```json
 {
   "cookie": "string",
-  "postId": "string",
-  "comment": "string"
+  "post_id": "string",
+  "comment": "string",
+  "userInfo": {
+    "id": "uuid",
+    "profile_id": "uuid"
+  }
 }
 ```
 
@@ -173,7 +187,7 @@ Creates a comment on a feed post. Requires authentication.
 ### Like/Unlike Feed Post
 
 ```
-POST /v1/arena/feed/like
+POST /v1/arena/action/like
 ```
 
 Toggles a like on a feed post. Requires authentication.
@@ -182,7 +196,7 @@ Toggles a like on a feed post. Requires authentication.
 ```json
 {
   "cookie": "string",
-  "postId": "string"
+  "post_id": "string"
 }
 ```
 
@@ -418,4 +432,3 @@ Fetches and synchronizes default content blocks and funnels for the artist's whi
 |--------|------|----------|-------------|
 | `user_cookie` | `string` | Yes | User authentication cookie |
 | `template` | `string` | Yes | Template name or ID |
-

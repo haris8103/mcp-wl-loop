@@ -16,7 +16,7 @@ The Fan Funnel API manages fan engagement funnels, including pre-registration fo
 ### Get Fan Funnel
 
 ```
-GET /v1/fan_funnel
+GET /v1/fan_funnel?page=1&limit=10
 ```
 
 Fetches the authenticated user's fan funnel with its items (pre-registrations). Requires authentication.
@@ -25,6 +25,12 @@ Fetches the authenticated user's fan funnel with its items (pre-registrations). 
 | Header | Type | Required | Description |
 |--------|------|----------|-------------|
 | `user_cookie` | `string` | Yes | Auth cookie |
+
+**Query Parameters Used By Frontend:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `page` | `number` | No | Page number, defaults to `1` in `Fans_Studio` |
+| `limit` | `number` | No | Page size, defaults to `10` in `Fans_Studio` |
 
 **Response:**
 ```json
@@ -97,14 +103,11 @@ Creates a pre-registration form item. Requires authentication. Subject to `mustB
 **Request Body (multipart/form-data):**
 ```json
 {
-  "fields.cookie": "string",
-  "fields.name": "string",
-  "fields.description": "string",
-  "fields.required_tags": "string",
-  "fields.release_date": "string",
-  "files.cover_image": "file_binary"
+  "...formData": "Fields are sent exactly as FormData built by the frontend"
 }
 ```
+
+**Frontend contract:** `Fans_Studio/src/app/api/fanbase.api.js` posts the `FormData` object directly. Do not document this endpoint as JSON. Authentication values, files, and form fields are whatever keys are present in that `FormData`.
 
 ---
 
@@ -267,7 +270,7 @@ Fetches all submissions for a pre-registration form by ID.
 ### Get Artist Form Fans
 
 ```
-POST /v1/fan_funnel/pre_registration/artist/fans
+POST /v1/fan_funnel/pre_registration/artist/fans/?search=<term>&page=<page>&limit=<limit>
 ```
 
 Fetches all unique fan submissions for the authenticated artist, with pagination. Requires `mustBeAuthenticated` middleware.
@@ -277,6 +280,14 @@ Fetches all unique fan submissions for the authenticated artist, with pagination
 |-----------|------|-------------|
 | `page` | `number` | Page number (default: 1) |
 | `limit` | `number` | Items per page (default: 20) |
+| `search` | `string` | Search term |
+
+**Headers:**
+| Header | Type | Required | Description |
+|--------|------|----------|-------------|
+| `user_cookie` | `string` | Yes | Auth cookie |
+
+**Request Body:** none. `Fans_Studio` sends filters in the query string.
 
 ---
 

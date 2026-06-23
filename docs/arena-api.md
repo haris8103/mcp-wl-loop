@@ -46,24 +46,6 @@ Adds a comment to a post. Requires authentication. Triggers email notification t
 
 ---
 
-### Delete Comment
-
-```http
-POST /v1/arena/action/comment/delete
-```
-
-Deletes a comment. Requires authentication and ownership.
-
-**Request Body:**
-```json
-{
-  "cookie": "string",
-  "commentId": "string"
-}
-```
-
----
-
 ### Like / Unlike
 
 ```http
@@ -234,18 +216,23 @@ Fetches collections for a specific artist.
 
 ---
 
-### Fetch Collection by ID
+### Fetch Collections by User ID
 
 ```
-GET /v1/arena/collections/byId/:id
+GET /v1/arena/collections/byId/:userId
 ```
 
-Fetches a specific collection by its ID.
+Fetches collections for a specific creator/user by their ID.
 
 **Path Parameters:**
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `id` | `string` | Collection ID |
+| `userId` | `string` | Creator User ID |
+
+**Headers:**
+| Header | Type | Required | Description |
+|--------|------|----------|-------------|
+| `user_cookie` | `string` | Yes | Auth cookie |
 
 **Query Parameters:**
 | Parameter | Type | Description |
@@ -254,7 +241,7 @@ Fetches a specific collection by its ID.
 | `type` | `string` | Type filter |
 | `limit` | `number` | Items per page |
 | `page` | `number` | Page number |
-| `isFree` | `boolean` | Free collection flag |
+| `isFree` | `boolean` | Free collection flag (0 or 1) |
 
 ---
 
@@ -348,10 +335,28 @@ Fetches albums for a creator. Results are cached.
 ### Fetch Single Album
 
 ```
-GET /v1/albums/:id
+POST /v1/albums/:id
 ```
 
 Fetches an album with its gallery items.
+
+**Request Body:**
+```json
+{
+  "cookie": "string",
+  "userInfo": {
+    "id": "uuid",
+    "role": "artist",
+    "profile_id": "uuid",
+    "avatar": "file_uuid",
+    "first_name": "string",
+    "display_name": "string",
+    "username": "string",
+    "onboard": true,
+    "wallet_address": "string"
+  }
+}
+```
 
 ---
 
@@ -530,6 +535,16 @@ Creates or updates a music album benefit for a collection. Requires authenticati
 }
 ```
 
+**Request Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `cookie` | `string` | Yes | Authentication cookie |
+| `collection_id` | `string` | Yes | Fans collection ID |
+| `type` | `string` | Yes | Operation type: `create` for a new album benefit, `update` for editing an existing album benefit |
+| `query` | `string` | Yes | Album metadata query string, for example `name: "Album", genre: { id: 1 }` |
+| `album_id` | `string` | Required for `update` | Existing album benefit ID |
+| `file` | `File[]` | No | Audio tracks to upload or append |
+
 **Response:**
 ```json
 {
@@ -587,6 +602,18 @@ Creates or updates a video benefit for a collection. Requires authentication and
 }
 ```
 
+**Request Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `cookie` | `string` | Yes | Authentication cookie |
+| `collection_id` | `string` | Yes | Fans collection ID |
+| `type` | `string` | Yes | Operation type: `create` for a new video benefit, `update` for editing an existing video benefit |
+| `name` | `string` | Yes | Video benefit name |
+| `video_id` | `string` | Required for `update` | Existing video benefit ID |
+| `main_video` | `File` | Required for `create` | Main video file |
+| `preview_video` | `File` | No | Preview video file |
+| `thumbnail` | `File` | No | Thumbnail image file |
+
 **Response:**
 ```json
 {
@@ -619,6 +646,17 @@ Creates or updates a gallery (image collection) benefit. Requires authentication
   "files.file": []
 }
 ```
+
+**Request Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `cookie` | `string` | Yes | Authentication cookie |
+| `collection_id` | `string` | Yes | Fans collection ID |
+| `type` | `string` | Yes | Operation type: `create` for a new gallery benefit, `update` for editing an existing gallery benefit |
+| `name` | `string` | Yes | Gallery benefit name |
+| `gallery_id` | `string` | Required for `update` | Existing gallery benefit ID |
+| `query` | `string` | No | Optional gallery metadata query string |
+| `file` | `File[]` | No | Gallery image files to upload or append |
 
 **Response:**
 ```json
@@ -673,6 +711,16 @@ Creates or updates a downloadable files benefit. Requires authentication and col
   "files.file": []
 }
 ```
+
+**Request Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `cookie` | `string` | Yes | Authentication cookie |
+| `collection_id` | `string` | Yes | Fans collection ID |
+| `type` | `string` | Yes | Operation type: `create` for a new downloadable-file benefit, `update` for editing an existing file benefit |
+| `name` | `string` | Yes | File benefit name |
+| `files_id` | `string` | Required for `update` | Existing file benefit ID |
+| `file` | `File[]` | Required for `create` | Downloadable files to upload |
 
 **Response:**
 ```json
@@ -993,6 +1041,7 @@ POST /v1/arena/feed
 ```json
 {
   "page": 0,
+  "forYou": true,
   "userInfo": {
     "id": "uuid",
     "role": "artist",
@@ -1003,8 +1052,7 @@ POST /v1/arena/feed
     "username": "string",
     "onboard": true,
     "wallet_address": "string"
-  },
-  "forYou": true
+  }
 }
 ```
 
@@ -1015,8 +1063,8 @@ POST /v1/arena/fetchByDate
 **Request Body:**
 ```json
 {
+  "cookie": "string",
   "ids": [],
-  "page": 0,
   "lastDate": "string",
   "userInfo": {
     "id": "uuid",
@@ -1111,6 +1159,13 @@ POST /v1/arena/events/:id
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `id` | `string` | Event ID |
+
+**Request Body:**
+```json
+{
+  "id": "string"
+}
+```
 
 #### Change User Role
 ```http
@@ -1242,5 +1297,3 @@ GET /v1/albums/intro/:id
 ```http
 GET /v1/albums/class/:id
 ```
-
-

@@ -23,7 +23,7 @@ Fetches the limits assigned to the authenticated user's plan.
 **Headers:**
 | Header | Type | Required | Description |
 |--------|------|----------|-------------|
-| `cookie` | `string` | Yes | Authentication cookie (handled by `mustBeAuthenticated` middleware) |
+| `user_cookie` | `string` | Yes | Authentication cookie (handled by `mustBeAuthenticated` middleware) |
 
 **Response (200 OK):**
 ```json
@@ -39,3 +39,5 @@ Fetches the limits assigned to the authenticated user's plan.
   }
 ]
 ```
+
+**Frontend contract:** `Fans_Studio/src/app/api/limits.api.tsx` returns `result.data?.[0]`, so UI code receives a single `PlanLimit | null` object even though the API response is an array.

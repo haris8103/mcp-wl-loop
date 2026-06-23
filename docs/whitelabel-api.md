@@ -121,6 +121,8 @@ Creates a new `.loop.fans` domain. Requires authentication via `user_cookie` hea
 - Brevo: Adds user to list 60 (Started Onboarding)
 - Mixpanel: `"Domain Created"` event
 
+**Frontend contract:** `Fans_Studio` sends JSON with `Content-Type: application/json` and `user_cookie` in the header. Create/update flows may also include fields such as `custom_domain`, `collection_access`, `onBoard`, `template_id`, SEO fields, social links, and appearance settings depending on the page.
+
 ---
 
 ### Update Domain
@@ -223,12 +225,16 @@ Fetches all content blocks for a domain. Requires authentication.
   "blocks": [
     {
       "id": "block_relationship_id",
+      "order": 0,
+      "date_created": 1710000000000,
       "collection": "album",
       "item": { "id": "...", "name": "...", "gallery": { ... } }
     }
   ]
 }
 ```
+
+**Frontend contract:** `Fans_Studio/src/app/hooks/useContentBlocks.ts` passes the domain config `id` as `:domain`, includes `user_cookie`, and consumes this JSON response directly.
 
 ---
 
@@ -299,6 +305,8 @@ Updates the blocks array for a content blocks container. Requires authentication
   ]
 }
 ```
+
+**Frontend contract:** `Fans_Studio/src/app/hooks/useContentBlockMutations.ts` sends `blocks` as an array of `{ "id": "relationship_id", "order": 0 }` and includes `user_cookie` in the header.
 
 **Response (200):**
 ```json
@@ -401,6 +409,8 @@ Deletes a block relationship from a content blocks container. Verifies ownership
 
 **Side Effects:** Mixpanel: `"Content Block Deleted"` event.
 
+**Frontend contract:** `Fans_Studio/src/app/hooks/useContentBlockMutations.ts` calls this as `DELETE /v1/blocks/:blockId?contentId=<contentId>`, where `:blockId` is the content-block relationship ID. The request includes `user_cookie`.
+
 ---
 
 ### Update Block Status
@@ -422,6 +432,8 @@ Updates the `status` field (e.g. `"draft"` / `"published"`) of any block type. V
   "status": "published"
 }
 ```
+
+**Frontend contract:** `Fans_Studio` sends JSON `formData` from the status form and includes `Content-Type: application/json` plus `user_cookie`.
 
 **Supported Collections:** `album`, `tracks_block`, `content_banner`, `contact_block`, `youtube_block`, `push_fm`, `forms_block`, `free_drops`, `paid_drops`
 
@@ -887,6 +899,8 @@ Creates an event container linked to a domain. Requires authentication.
 }
 ```
 
+**Frontend contract:** `Fans_Studio/src/app/api/events.api.ts` uses this as an "enable events" call and sends `user_cookie`.
+
 ---
 
 ### Get Events
@@ -896,6 +910,8 @@ GET /v1/wl/events
 ```
 
 Fetches all events for the authenticated user's domain. Requires authentication.
+
+**Frontend contract:** `Fans_Studio/src/app/api/events.api.ts` returns `response.data.data`, so the API response must contain the top-level `data` property shown below.
 
 **Response (200):**
 ```json

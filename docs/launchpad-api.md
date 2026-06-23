@@ -56,9 +56,9 @@ Creates a new launchpad with attached fan collection. Requires authentication. S
 **Request Body (multipart/form-data):**
 ```json
 {
-  "fields.cookie": "string",
-  "fields.collection": "string",
-  "files.artwork": "file_binary"
+  "cookie": "string",
+  "collection": "{\"collection_name\":\"string\",\"status\":\"draft\"}",
+  "artwork": "file_binary"
 }
 ```
 
@@ -79,6 +79,8 @@ Creates a new launchpad with attached fan collection. Requires authentication. S
   "chain": "string"
 }
 ```
+
+**Frontend contract:** `Fans_Studio/src/app/hooks/useCollectionMutations.ts` sends `FormData` with top-level keys `artwork`, `cookie`, and `collection`. `collection` is a JSON string containing the collection fields.
 
 **Side Effects:**
 - Uploads artwork to cloud storage
@@ -114,13 +116,15 @@ POST /v1/launchpad/editCollection/update-status/:id
 
 Updates just the status (published/draft) of a launchpad and its collection. Requires authentication and ownership.
 
-**Request Body:**
+**Request Body (multipart/form-data):**
 ```json
 {
   "cookie": "string",
-  "status": "string"
+  "status": "published"
 }
 ```
+
+**Frontend contract:** `Fans_Studio/src/app/api/collections.api.tsx` expects this endpoint to return HTTP 200 and maps that to `true`; it does not consume a response object.
 
 **Validation:** Uses `voteCollectionSchema` (Joi)
 
@@ -174,3 +178,23 @@ Creates a support-type collection ("Good Vibes"). Requires authentication. Each 
 ```
 
 **Validation:** Uses `supportCollectionSchema` (Joi)
+
+---
+
+### Delete Launchpad (Collection)
+
+```
+DELETE /v1/launchpad/:id
+```
+
+Deletes a launchpad and its associated collection. Requires authentication and ownership.
+
+**Path Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | `string` | Launchpad ID |
+
+**Headers:**
+| Header | Type | Required | Description |
+|--------|------|----------|-------------|
+| `user_cookie` | `string` | Yes | Auth cookie |

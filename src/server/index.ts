@@ -13,6 +13,7 @@ import fs from "fs";
 // import { registerPrompts } from "../prompts/index.js";
 import { stopSimulatedLogging } from "./logging.js";
 import { syncRoots } from "./roots.js";
+import { registerApiTools } from "../tools/api_tools.js";
 
 // Server Factory response
 export type ServerFactoryResponse = {
@@ -947,17 +948,7 @@ export const createServer: () => ServerFactoryResponse = () => {
     }
   );
 
-  server.tool(
-    "ping",
-    "A simple ping tool to verify server connectivity",
-    async () => {
-      return {
-        content: [{ type: "text", text: "pong" }]
-      };
-    }
-  );
-
-
+  registerApiTools(server);
 
   // Perform post-initialization operations
   server.server.oninitialized = async () => {
